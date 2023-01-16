@@ -9,15 +9,15 @@ class Category extends Equatable {
   final String cid;
   final String title;
   final String description;
-  final String cimage;
-  bool cstatus;
+  final String image;
+  bool status;
   final int id;
   Category({
     required this.cid,
     required this.title,
     required this.description,
-    required this.cimage,
-    this.cstatus = false,
+    required this.image,
+    this.status = false,
     required this.id,
   });
 
@@ -25,16 +25,16 @@ class Category extends Equatable {
     String? cid,
     String? title,
     String? description,
-    String? cimage,
-    bool? cstatus,
+    String? image,
+    bool? status,
     int? id,
   }) {
     return Category(
       cid: cid ?? this.cid,
       title: title ?? this.title,
       description: description ?? this.description,
-      cimage: cimage ?? this.cimage,
-      cstatus: cstatus ?? this.cstatus,
+      image: image ?? this.image,
+      status: status ?? this.status,
       id: id ?? this.id,
     );
   }
@@ -44,8 +44,8 @@ class Category extends Equatable {
       'cid': cid,
       'title': title,
       'description': description,
-      'cimage': cimage,
-      'cstatus': cstatus,
+      'image': image,
+      'status': status,
       'id': id,
     };
   }
@@ -55,8 +55,8 @@ class Category extends Equatable {
       cid: map['cid'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
-      cimage: map['cimage'] as String,
-      cstatus: map['cstatus'] as bool,
+      image: map['image'] as String,
+      status: map['status'] as bool,
       id: map['id'] as int,
     );
   }
@@ -75,8 +75,8 @@ class Category extends Equatable {
       cid,
       title,
       description,
-      cimage,
-      cstatus,
+      image,
+      status,
       id,
     ];
   }

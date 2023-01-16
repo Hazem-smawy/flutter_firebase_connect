@@ -61,12 +61,12 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 () => Row(
                   children: [
                     Checkbox(
-                      value: (categoryController.newCategory['cstatus'] == null)
-                          ? widget.category?.cstatus ?? false
+                      value: (categoryController.newCategory['status'] == null)
+                          ? widget.category?.status ?? false
                           : categoryController.status,
                       onChanged: (value) {
                         categoryController.newCategory.update(
-                          'cstatus',
+                          'status',
                           (_) => value,
                           ifAbsent: () => value,
                         );
@@ -113,7 +113,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                       await storage.uploadImage(image);
                       var imageURL = await storage.getDownloadURL(image.name);
                       categoryController.newCategory.update(
-                        'cimage',
+                        'image',
                         (_) => imageURL,
                         ifAbsent: () => imageURL,
                       );
@@ -127,9 +127,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             child: imageFile == null
-                                ? widget.category?.cimage != null
+                                ? widget.category?.image != null
                                     ? Image.network(
-                                        widget.category?.cimage ?? '',
+                                        widget.category?.image ?? '',
                                         fit: BoxFit.cover,
                                       )
                                     : const SizedBox()
@@ -182,7 +182,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                       title: curentCategory['title'] ?? oldCategory?.title,
                       description: curentCategory['description'] ??
                           oldCategory?.description,
-                      cimage: curentCategory['cimage'] ?? oldCategory?.cimage,
+                      image: curentCategory['image'] ?? oldCategory?.image,
                       id: curentCategory['id'] ?? oldCategory?.id,
                     );
                     //print(newCategory);
@@ -196,12 +196,12 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                       title: categoryController.newCategory['title'],
                       description:
                           categoryController.newCategory['description'],
-                      cimage: categoryController.newCategory['cimage'],
+                      image: categoryController.newCategory['image'],
                       id: 1,
-                      cstatus:
-                          (categoryController.newCategory['cstatus'] == null)
+                      status:
+                          (categoryController.newCategory['status'] == null)
                               ? false
-                              : categoryController.newCategory['cstatus'],
+                              : categoryController.newCategory['status'],
                     ));
                     Get.back();
                   } catch (e) {

@@ -13,16 +13,26 @@ class CategoryController extends GetxController {
     super.onInit();
   }
 
+  var showNewCategory = false.obs;
+
+  void toggleShowNewCategory() {
+    showNewCategory.value = !showNewCategory.value;
+  }
+
   var newCategory = {}.obs;
 
-  bool get status => newCategory['cstatus'];
+  bool get status => newCategory['status'];
   void updateProductStatus(int index, Category category, bool value) {
-    category.cstatus = value;
+    category.status = value;
     categories[index] = category;
   }
 
   void saveNewCategoryStatus(Category category, String field, bool value) {
     database.updateField(category, field, value);
+  }
+
+  Future<void> addCategory(Category category) {
+    return database.addCategory(category);
   }
 
   void deleteCategory(String id, String imageURL) {

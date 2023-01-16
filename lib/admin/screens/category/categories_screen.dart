@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/category_controller.dart';
 import 'package:flutter_fire_base/admin/model/category_model.dart';
-import 'package:flutter_fire_base/admin/screens/add_category_screen.dart';
+import 'package:flutter_fire_base/admin/screens/category/add_category_screen.dart';
 import 'package:flutter_fire_base/admin/screens/products_screen.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -111,7 +111,7 @@ class _buildShowProduct extends StatelessWidget {
                 color: MyColors.primaryColor,
                 borderRadius: BorderRadius.circular(10),
                 image: DecorationImage(
-                  image: NetworkImage(category.cimage),
+                  image: NetworkImage(category.image),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -190,7 +190,7 @@ class _buildShowProduct extends StatelessWidget {
                           onTap: () {
                             print(category.cid);
                             categoryController.deleteCategory(
-                                category.cid, category.cimage);
+                                category.cid, category.image);
                           },
                           child: Container(
                             padding: const EdgeInsets.all(7),

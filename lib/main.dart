@@ -5,7 +5,7 @@ import 'package:flutter_fire_base/admin/screens/auth/login_widget.dart';
 import 'package:flutter_fire_base/admin/screens/auth/sign_widget.dart';
 import 'package:flutter_fire_base/admin/screens/auth/utils.dart';
 import 'package:flutter_fire_base/admin/screens/auth/verify_email_page.dart';
-import 'package:flutter_fire_base/ui/home_screen.dart';
+import 'package:flutter_fire_base/admin/screens/home/bottom_navigation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'firebase_options.dart';
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.pink,
           ),
-          home: const MainPage(),
+          home: const AdminBottomNavigation(),
         );
       },
     );
