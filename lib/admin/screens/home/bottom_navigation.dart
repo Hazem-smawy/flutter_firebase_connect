@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/screens/category/categories_screen.dart';
-import 'package:flutter_fire_base/admin/screens/home/admin_category_screen.dart';
+import 'package:flutter_fire_base/admin/screens/admin_category/admin_category_screen.dart';
 import 'package:flutter_fire_base/admin/screens/home/home_screen.dart';
 import 'package:flutter_fire_base/admin/screens/products_screen.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';

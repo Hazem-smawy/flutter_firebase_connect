@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_fire_base/admin/screens/admin_products/products_screen.dart';
 import 'package:flutter_fire_base/admin/screens/auth/login_widget.dart';
 import 'package:flutter_fire_base/admin/screens/auth/sign_widget.dart';
 import 'package:flutter_fire_base/admin/screens/auth/utils.dart';

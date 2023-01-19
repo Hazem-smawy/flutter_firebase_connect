@@ -35,13 +35,17 @@ class CategoryController extends GetxController {
     return database.addCategory(category);
   }
 
-  void deleteCategory(String id, String imageURL) {
-    storageService.deleteImageURL(imageURL);
-    database.deleteField(id);
+  Future<void> deleteImage(String imageURL) async {
+   await storageService.deleteImageURL(imageURL);
   }
 
-  void updateDocument(Category category) {
+  Future<void> deleteCategory(String id, String imageURL)async {
+  await  deleteImage(imageURL);
+  await  database.deleteField(id);
+  }
+
+  Future<void> updateDocument(Category category) async{
     //print('controller update');
-    database.updateDoc(category);
+   await database.updateDoc(category);
   }
 }

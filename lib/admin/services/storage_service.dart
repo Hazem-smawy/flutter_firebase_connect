@@ -6,15 +6,15 @@ import 'package:image_picker/image_picker.dart';
 class StorageService {
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  Future<void> uploadImage(XFile image) async {
+  Future<void> uploadImage(XFile image,String fileName) async {
     await storage
-        .ref('category_images/${image.name}')
+        .ref('$fileName/${image.name}')
         .putFile(File(image.path));
   }
 
-  Future<String> getDownloadURL(String imageName) async {
+  Future<String> getDownloadURL(String imageName,String fileName) async {
     String downloadURL =
-        await storage.ref('category_images/$imageName').getDownloadURL();
+        await storage.ref('$fileName/$imageName').getDownloadURL();
     return downloadURL;
   }
 

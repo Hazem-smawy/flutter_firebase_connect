@@ -110,8 +110,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                       setState(() {
                         imageFile = file;
                       });
-                      await storage.uploadImage(image);
-                      var imageURL = await storage.getDownloadURL(image.name);
+                      await storage.uploadImage(image,'category_images');
+                      var imageURL = await storage.getDownloadURL(image.name,'category_images');
                       categoryController.newCategory.update(
                         'image',
                         (_) => imageURL,
