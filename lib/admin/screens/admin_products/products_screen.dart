@@ -122,7 +122,6 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      
                       // second btn
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
@@ -160,11 +159,11 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const _buildCreateProductPlaceHolder();
+                          return const SizedBox();
                         }
                         if (snapshot.hasData) {
                           return snapshot.data.length == 0
-                              ? const _buildCreateProductPlaceHolder()
+                              ? const SizedBox() // _buildCreateProductPlaceHolder()
                               : Obx(() => GridView.builder(
                                     primary: false,
                                     shrinkWrap: true,
@@ -176,7 +175,7 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
                                       crossAxisSpacing: 10,
-                                      mainAxisSpacing: 10,
+                                      mainAxisSpacing: 20,
                                     ),
                                     itemBuilder: (context, i) {
                                       return AdminProductItem(

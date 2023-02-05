@@ -7,13 +7,14 @@ import 'package:equatable/equatable.dart';
 class Product extends Equatable {
   final String id;
   final String name;
-  final String description;
+  List<dynamic>  description;
   final String image;
   final String price;
   final String offerPrice;
   final String quantity;
   bool status;
   final String cid;
+  
   Product({
     required this.id,
     required this.name,
@@ -45,7 +46,7 @@ class Product extends Equatable {
   Product copyWith({
     String? id,
     String? name,
-    String? description,
+    List<dynamic>? description,
     String? image,
     String? price,
     String? offerPrice,
@@ -84,7 +85,7 @@ class Product extends Equatable {
     return Product(
       id: snap['id'] as String,
       name: snap['name'] as String,
-      description: snap['description'] as String,
+      description: snap['description'] as List<dynamic>,
       image: snap['image'] as String,
       price: snap['price'] as String,
       offerPrice: snap['offerPrice'] as String,
@@ -96,9 +97,22 @@ class Product extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory Product.fromJson(String source) =>
-      Product.fromSnapshot(json.decode(source) as DocumentSnapshot);
+  factory Product.fromJson(String source) => Product.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
+
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      description: List<dynamic>.from((map['description'] as List<dynamic>)),
+      image: map['image'] as String,
+      price: map['price'] as String,
+      offerPrice: map['offerPrice'] as String,
+      quantity: map['quantity'] as String,
+      status: map['status'] as bool,
+      cid: map['cid'] as String,
+    );
+  }
 }

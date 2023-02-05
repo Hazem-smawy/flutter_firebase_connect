@@ -246,8 +246,12 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                               _categoryController.newCategory['status'],
                           id: 1,
                         );
-                        await _categoryController
-                            .updateDocument(updatedCategory);
+                        if (updatedCategory.title != '' &&
+                            updatedCategory.description != '' &&
+                            updatedCategory.image != '') {
+                          await _categoryController
+                              .updateDocument(updatedCategory);
+                        }
                         nameController.clear();
                         descriptionController.clear();
                         imagePicked = null;
@@ -295,6 +299,47 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
 
                           upload = false;
                         });
+                        Get.defaultDialog(
+                            title: '',
+                            // backgroundColor: MyColors.bg.withOpacity(0.2),
+                            content: SizedBox(
+                              width: 200,
+                              height: 200,
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'تم التعديل بنجاح',
+                                    style: TextStyle(
+                                      color: MyColors.secondaryTextColor,
+                                      fontFamily: 'Cairo',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    // width: 50,height: 50,
+
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: Colors.green),
+                                    ),
+                                    child: const Icon(
+                                      Icons.check,
+                                      size: 35,
+                                      color: Colors.green,
+                                    ),
+                                  )
+                                ],
+                              )),
+                            ));
+                        Future.delayed(const Duration(seconds: 2))
+                            .then((value) => Get.back());
                       }
                     },
                     icon: const FaIcon(FontAwesomeIcons.plus),

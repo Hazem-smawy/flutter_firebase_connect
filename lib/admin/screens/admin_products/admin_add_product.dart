@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/product_controller.dart';
 import 'package:flutter_fire_base/admin/model/products_model.dart';
+import 'package:flutter_fire_base/admin/screens/auth/utils.dart';
 import 'package:flutter_fire_base/admin/services/storage_service.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,7 +25,9 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
   TextEditingController priceController = TextEditingController();
   TextEditingController overPriceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
-  final _descriptionController = quill.QuillController.basic();
+  quill.QuillController _descriptionController = quill.QuillController.basic();
+  // quillController = quill.QuillController.basic();
+
   bool? setStatus = true;
   XFile? imagePicked;
   String? imageUrl;
@@ -36,13 +38,25 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
   final ProductsController _productsController = Get.find();
   @override
   void initState() {
-    // nameController.text = _productsController.newProduct['name'] ?? '';
-    // // _descriptionController.getPlainText();
-    // priceController.text = _productsController.newProduct['price'] ?? '';
-    // priceController.text = _productsController.newProduct['overPrice'] ?? '';
-    // priceController.text = _productsController.newProduct['quantity'] ?? '';
-    _descriptionController.document
-        .insert(0, _productsController.newProduct['description'] ?? '');
+    // quill.DefaultTextBlockStyle(
+    //   const TextStyle(fontFamily: 'Cairo'),
+    //   const Tuple2<double, double>(6, 0),
+    //   const Tuple2<double, double>(6, 0),
+    //   const BoxDecoration(),
+    // );
+    // const quill.DirectionAttribute('rtl');
+    // const quill.DirectionAttribute('right');
+    //_descriptionController.formatText(0, 10,
+    // const quill.Attribute('align', quill.AttributeScope.IGNORE, 'right'));
+
+    if (_productsController.newProduct['description'] != null) {
+      _descriptionController = quill.QuillController(
+        document: quill.Document.fromJson(
+            _productsController.newProduct['description']),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+    }
+
     setStatus = _productsController.newProduct['status'] ?? true;
     imageUrl = _productsController.newProduct['image'];
 
@@ -63,7 +77,7 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
           () => Container(
             margin: const EdgeInsets.all(20),
             width: double.maxFinite,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
             decoration: BoxDecoration(
               color: MyColors.bg,
               borderRadius: BorderRadius.circular(40),
@@ -72,9 +86,6 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
               key: formKey,
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
                   const Text(
                     '  منتج جديد',
                     style: TextStyle(
@@ -278,28 +289,43 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                       color: MyColors.containerColor,
                     ),
                     width: double.infinity,
-                    height: MediaQuery.of(context).size.height / 2.5,
+                    height: MediaQuery.of(context).size.height - 300,
                     child: Column(
                       children: [
                         quill.QuillToolbar.basic(
+                          showDirection: true,
+                          showRightAlignment: true,
+                          showLeftAlignment: true,
+                          showAlignmentButtons: true,
+                          fontFamilyValues: const {'cairo': 'Cairo'},
+                          multiRowsDisplay: true,
+                          controller: _descriptionController,
                           showBackgroundColorButton: true,
                           toolbarSectionSpacing: 10,
-                          controller: _descriptionController,
                           toolbarIconSize: 20,
                           iconTheme: const quill.QuillIconTheme(
                             borderRadius: 10,
                             iconUnselectedFillColor: MyColors.containerColor,
                             iconSelectedFillColor: MyColors.primaryColor,
                           ),
-                          multiRowsDisplay: false,
                         ),
                         const SizedBox(
                           height: 15,
                         ),
                         Expanded(
                           child: Container(
+                            constraints: const BoxConstraints(minHeight: 600),
                             padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: MyColors.containerColor,
+                                width: 2,
+                              ),
+                              color: MyColors.bg,
+                            ),
                             child: quill.QuillEditor.basic(
+                              
                               controller: _descriptionController,
                               readOnly: false,
                             ),
@@ -334,8 +360,9 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                   if (!_productsController.upload.value)
                     ElevatedButton.icon(
                         onPressed: () async {
-                          final description =
-                              _descriptionController.document.toPlainText();
+                          final description = _descriptionController.document
+                              .toDelta()
+                              .toJson();
                           if (imageUrl != null) {
                             _productsController.upload.value = true;
                             if (imagePicked != null) {
@@ -364,8 +391,17 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                                 status: setStatus ??
                                     _productsController.newProduct['status']);
 
-                            _productsController.updateDocument(updatedProduct);
+                            if (updatedProduct.name.isNotEmpty &&
+                                updatedProduct.description.isNotEmpty &&
+                                updatedProduct.image.isNotEmpty &&
+                                updatedProduct.price.isNotEmpty) {
+                              _productsController
+                                  .updateDocument(updatedProduct);
+                            } else {
+                              Utils.showSnackBar('ادخل كل المعتومات المطلوبه');
+                            }
                             _productsController.upload.value = false;
+                            _descriptionController.clear();
                             Get.back();
                             return;
                           }
@@ -400,10 +436,55 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                             _productsController.newProduct.clear();
 
                             await _productsController.addProduct(product);
+                            _descriptionController.clear();
                           } catch (e) {
                             _productsController.upload.value = false;
                           } finally {
+                            Get.defaultDialog(
+                                title: '',
+                                // backgroundColor: MyColors.bg.withOpacity(0.2),
+                                content: SizedBox(
+                                  width: 200,
+                                  height: 200,
+                                  child: Center(
+                                      child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'تم التعديل بنجاح',
+                                        style: TextStyle(
+                                          color: MyColors.secondaryTextColor,
+                                          fontFamily: 'Cairo',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        // width: 50,height: 50,
+
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border:
+                                              Border.all(color: Colors.green),
+                                        ),
+                                        child: const Icon(
+                                          Icons.check,
+                                          size: 35,
+                                          color: Colors.green,
+                                        ),
+                                      )
+                                    ],
+                                  )),
+                                ));
+                            Future.delayed(const Duration(seconds: 1))
+                                .then((value) => Get.back());
+
                             _productsController.upload.value = false;
+                            _descriptionController.clear();
                             Get.back();
                           }
                         },
@@ -463,6 +544,8 @@ class _builderTextFiel extends StatelessWidget {
             ifAbsent: () => value,
           );
         }),
+        //textInputAction: TextInputAction.next,
+        // onEditingComplete: () => FocusScope.of(context).nextFocus(),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (name) => name == null ? "الحقل فاضي" : null,
         minLines: numLine,

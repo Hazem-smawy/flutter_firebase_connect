@@ -152,6 +152,7 @@ class _AdminAllProductsScreenState extends State<AdminAllProductsScreen> {
                   if (_productsController.products.isNotEmpty)
                     Obx(
                       () => GridView.builder(
+                        padding: const EdgeInsets.only(bottom: 40),
                         primary: false,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -160,7 +161,7 @@ class _AdminAllProductsScreenState extends State<AdminAllProductsScreen> {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
+                          mainAxisSpacing: 25,
                         ),
                         itemBuilder: (context, i) {
                           return AdminProductItem(

@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_fire_base/admin/screens/admin_products/products_screen.dart';
 import 'package:flutter_fire_base/admin/screens/auth/login_widget.dart';
 import 'package:flutter_fire_base/admin/screens/auth/sign_widget.dart';
 import 'package:flutter_fire_base/admin/screens/auth/utils.dart';
 import 'package:flutter_fire_base/admin/screens/auth/verify_email_page.dart';
-import 'package:flutter_fire_base/admin/screens/home/bottom_navigation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'firebase_options.dart';
@@ -30,19 +28,19 @@ class MyApp extends StatelessWidget {
           scaffoldMessengerKey: Utils.messengerKey,
           debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,
-          title: 'Flutter Demo',
+          title: 'Flutter ',
           theme: ThemeData(
             primarySwatch: Colors.pink,
           ),
-          home: const AdminBottomNavigation(),
+          home: const AdminMainPage(),
         );
       },
     );
   }
 }
 
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+class AdminMainPage extends StatelessWidget {
+  const AdminMainPage({super.key});
 
   @override
   Widget build(BuildContext context) {

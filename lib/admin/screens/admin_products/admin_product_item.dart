@@ -17,23 +17,8 @@ class AdminProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: 220,
       child: Stack(clipBehavior: Clip.none, children: [
-        // Positioned(
-        //     top: -15,
-        //     left: 0,
-        //     right: 0,
-        //     child: Container(
-        //       width: 15,
-        //       height: 15,
-        //       decoration: BoxDecoration(
-        //         border: Border.all(
-        //             color: category.status ? Colors.green : Colors.red,
-        //             width: 2),
-        //         shape: BoxShape.circle,
-        //         color: MyColors.bg,
-        //       ),
-        //     )),
         Container(
             margin: const EdgeInsets.only(bottom: 50),
             decoration: BoxDecoration(
@@ -70,12 +55,12 @@ class AdminProductItem extends StatelessWidget {
               ),
             )),
         Positioned(
-          bottom: 0,
+          bottom: -20,
           right: 0,
           left: 0,
           child: Container(
             margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: MyColors.secondaryColor.withOpacity(0.9),
               borderRadius: BorderRadius.circular(15),
@@ -95,17 +80,17 @@ class AdminProductItem extends StatelessWidget {
                   textAlign: TextAlign.end,
                 ),
                 Text(
-                  product.description,
+                  product.price,
                   style: const TextStyle(
                     fontFamily: 'Cairo',
-                    fontSize: 10,
-                    color: MyColors.secondaryTextColor,
+                    fontSize: 12,
+                    color: MyColors.lessBlackColor,
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   textAlign: TextAlign.end,
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

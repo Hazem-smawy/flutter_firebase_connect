@@ -26,7 +26,8 @@ class ProductsController extends GetxController {
 
   Future<void> addProduct(Product product) async {
     await database.addProduct(product);
-    productsOfCategory.add(product);
+    productsOfCategory.value =
+        await database.getProductsOfCategory(categoryId.value);
   }
 
   Future<void> deleteImage(String imageURL) async {

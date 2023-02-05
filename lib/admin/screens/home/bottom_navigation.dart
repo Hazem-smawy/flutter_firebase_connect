@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fire_base/admin/screens/category/categories_screen.dart';
+import 'package:flutter_fire_base/admin/screens/admin_about_shop_screens/admin_about_shop_screen.dart';
 import 'package:flutter_fire_base/admin/screens/admin_category/admin_category_screen.dart';
+import 'package:flutter_fire_base/admin/screens/admin_order_screen/admin_order_screen.dart';
+import 'package:flutter_fire_base/admin/screens/admin_users_manage/admin_users_manage.dart';
 import 'package:flutter_fire_base/admin/screens/home/home_screen.dart';
-import 'package:flutter_fire_base/admin/screens/products_screen.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -14,12 +15,13 @@ class AdminBottomNavigation extends StatefulWidget {
 }
 
 class _AdminBottomNavigationState extends State<AdminBottomNavigation> {
-  int index = 3;
+  int index = 4;
   List<Widget> pages = [
-    const ProductsScreen(),
-    const CategoriesScreen(),
+    const AdminAboutShopScreen(),
+    AmdinUserMangage(),
+     AdminOrderScreen(),
     const AdminCategoryScreen(),
-    const AdminHomeScreen(),
+    AdminHomeScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -46,76 +48,14 @@ class _AdminBottomNavigationState extends State<AdminBottomNavigation> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: MyColors.secondaryColor,
-                  ),
-                  child: const FaIcon(
-                    FontAwesomeIcons.magnifyingGlass,
-                    color: MyColors.secondaryTextColor,
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: MyColors.secondaryColor,
-                    ),
-                    child: const TextField(
-                      textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                          left: 5,
-                          right: 10,
-                          top: 5,
-                          bottom: 5,
-                        ),
-                        hintText: 'ابحث هنا',
-                        hintStyle: TextStyle(
-                          fontFamily: 'Cairo',
-                          fontSize: 14,
-                          color: MyColors.secondaryTextColor,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            pages[index]
-          ],
-        ),
-      ),
+      body: pages[index],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
         selectedItemColor: MyColors.primaryColor,
         unselectedItemColor: MyColors.secondaryTextColor,
         selectedLabelStyle: const TextStyle(fontFamily: 'Cairo'),
+        unselectedLabelStyle: const TextStyle(fontFamily: 'Cairo'),
+        showUnselectedLabels: true,
         elevation: 0,
         onTap: ((value) {
           setState(() {
@@ -124,19 +64,23 @@ class _AdminBottomNavigationState extends State<AdminBottomNavigation> {
         }),
         items: const [
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.users),
+            icon: FaIcon(FontAwesomeIcons.info),
+            label: 'عن المتجر',
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.user),
             label: 'العملاء',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.firstOrder),
-            label: 'الطلبات',
+            icon: FaIcon(FontAwesomeIcons.calendar),
+            label: ' الطلبات',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.box),
+            icon: FaIcon(FontAwesomeIcons.listUl),
             label: 'الاصناف',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.house),
+            icon: FaIcon(FontAwesomeIcons.chartLine),
             label: 'الرئيسيه',
           ),
         ],
