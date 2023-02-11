@@ -52,7 +52,7 @@ class _AdminOptionAboutShopWidgetState
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        minimumSize: const Size(200, 50)),
+                        minimumSize: const Size(160, 45)),
                     onPressed: () {
                       aboutController.newAbout.clear();
                       setState(() {
@@ -131,7 +131,7 @@ class AboutItemWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         color: MyColors.bg,
         boxShadow: [
           BoxShadow(

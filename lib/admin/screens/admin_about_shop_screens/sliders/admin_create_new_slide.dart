@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_fire_base/admin/controller/category_controller.dart';
-import 'package:flutter_fire_base/admin/model/category_model.dart';
+import 'package:flutter_fire_base/admin/controller/admin_slider_controller.dart';
+import 'package:flutter_fire_base/admin/model/slider_model.dart';
 import 'package:flutter_fire_base/admin/services/storage_service.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,16 +10,16 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
-class AdminCreateNewCategory extends StatefulWidget {
-  const AdminCreateNewCategory({
+class AdminCreateNewSlider extends StatefulWidget {
+  const AdminCreateNewSlider({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<AdminCreateNewCategory> createState() => AdminCreateNewCategoryState();
+  State<AdminCreateNewSlider> createState() => AdminCreateNewSliderState();
 }
 
-class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
+class AdminCreateNewSliderState extends State<AdminCreateNewSlider> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   bool? setStatus = true;
@@ -29,17 +29,17 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
   bool upload = false;
 
   StorageService storage = StorageService();
-  final CategoryController _categoryController = Get.find();
+  final SliderController sliderController = Get.put(SliderController());
   @override
   void initState() {
-    nameController.text = _categoryController.newCategory['title'] ?? '';
+    nameController.text = sliderController.newSlider['title'] ?? '';
     descriptionController.text =
-        _categoryController.newCategory['description'] ?? '';
+        sliderController.newSlider['description'] ?? '';
 
     // TODO: implement initState
     super.initState();
-    setStatus = _categoryController.newCategory['status'] ?? true;
-    imageUrl = _categoryController.newCategory['image'];
+    setStatus = sliderController.newSlider['status'] ?? true;
+    imageUrl = sliderController.newSlider['image'];
   }
 
   @override
@@ -64,7 +64,7 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                 height: 20,
               ),
               const Text(
-                '  تصنيف جديد',
+                '  سلايدر جديد',
                 style: TextStyle(
                   fontFamily: 'Cairo',
                   fontSize: 18,
@@ -86,8 +86,8 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                               name: 'title',
                               controller: nameController,
                               numLine: 1,
-                              hintText: '  اسم التصنيف',
-                              categoryController: _categoryController,
+                              hintText: '  العنوان',
+                              sliderController: sliderController,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -105,9 +105,9 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                                         borderRadius: BorderRadius.circular(5)),
                                     value: setStatus,
                                     onChanged: ((value) {
-                                      if (_categoryController
-                                          .newCategory.isNotEmpty) {
-                                        _categoryController.newCategory.update(
+                                      if (sliderController
+                                          .newSlider.isNotEmpty) {
+                                        sliderController.newSlider.update(
                                             'status', (value) => value,
                                             ifAbsent: (() => value));
                                       }
@@ -194,9 +194,9 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
               _builderTextFiel(
                 name: 'description',
                 controller: descriptionController,
-                categoryController: _categoryController,
+                sliderController: sliderController,
                 numLine: 1,
-                hintText: '  وصف التصنيف',
+                hintText: '  وصف السلايد',
               ),
               const SizedBox(
                 height: 20,
@@ -223,7 +223,7 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                 ElevatedButton.icon(
                     onPressed: () async {
                       final valid = formKey.currentState!.validate();
-                      if (_categoryController.newCategory.isNotEmpty) {
+                      if (sliderController.newSlider.isNotEmpty) {
                         setState(() {
                           upload = true;
                         });
@@ -231,26 +231,23 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                         if (imagePicked == null) {
                           currentImage = imageUrl!;
                         } else {
-                          await storage.uploadImage(
-                              imagePicked!, 'category_images');
+                          await storage.uploadImage(imagePicked!, 'sliders');
                           currentImage = await storage.getDownloadURL(
-                              imagePicked!.name, 'category_images');
-                          await _categoryController.deleteImage(imageUrl!);
+                              imagePicked!.name, 'sliders');
+                          await sliderController.deleteImage(imageUrl!);
                         }
-                        var updatedCategory = Category(
-                          cid: _categoryController.newCategory['cid'],
+                        var updateSlider = ShowSlider(
+                          id: sliderController.newSlider['id'],
                           title: nameController.text.trim(),
                           description: descriptionController.text.trim(),
                           image: currentImage,
-                          status: setStatus ??
-                              _categoryController.newCategory['status'],
-                          id: 1,
+                          status:
+                              setStatus ?? sliderController.newSlider['status'],
                         );
-                        if (updatedCategory.title != '' &&
-                            updatedCategory.description != '' &&
-                            updatedCategory.image != '') {
-                          await _categoryController
-                              .updateDocument(updatedCategory);
+                        if (updateSlider.title != '' &&
+                            updateSlider.description != '' &&
+                            updateSlider.image != '') {
+                          await sliderController.updateDocument(updateSlider);
                         }
                         nameController.clear();
                         descriptionController.clear();
@@ -258,11 +255,52 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                         setStatus = true;
                         // print('updated category');
                         // print(updatedCategory);
-                        setState(() {
-                          _categoryController.toggleShowNewCategory();
+                        sliderController.toggleShowNewSlider();
 
+                        setState(() {
                           upload = false;
                         });
+                        Get.defaultDialog(
+                            title: '',
+                            // backgroundColor: MyColors.bg.withOpacity(0.2),
+                            content: SizedBox(
+                              width: 200,
+                              height: 200,
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'تم التعديل بنجاح',
+                                    style: TextStyle(
+                                      color: MyColors.secondaryTextColor,
+                                      fontFamily: 'Cairo',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    // width: 50,height: 50,
+
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: Colors.green),
+                                    ),
+                                    child: const Icon(
+                                      Icons.check,
+                                      size: 35,
+                                      color: Colors.green,
+                                    ),
+                                  )
+                                ],
+                              )),
+                            ));
+                        Future.delayed(const Duration(seconds: 1))
+                            .then((value) => Get.back());
                         return;
                       }
                       if (!valid && imagePicked == null) return;
@@ -272,21 +310,19 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                         setState(() {
                           upload = true;
                         });
-                        await storage.uploadImage(
-                            imagePicked!, 'category_images');
+                        await storage.uploadImage(imagePicked!, 'sliders');
                         final imageString = await storage.getDownloadURL(
-                            imagePicked!.name, 'category_images');
+                            imagePicked!.name, 'sliders');
 
-                        final category = Category(
-                          cid: uuid.v1(),
+                        final showSlider = ShowSlider(
+                          id: uuid.v1(),
                           title: nameController.text.trim(),
                           description: descriptionController.text.trim(),
                           image: imageString,
                           status: setStatus ?? true,
-                          id: 1,
                         );
 
-                        await _categoryController.addCategory(category);
+                        await sliderController.addSlider(showSlider);
                         nameController.clear();
                         descriptionController.clear();
                         imagePicked = null;
@@ -295,7 +331,7 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                         print(e);
                       } finally {
                         setState(() {
-                          _categoryController.toggleShowNewCategory();
+                          sliderController.toggleShowNewSlider();
 
                           upload = false;
                         });
@@ -371,13 +407,13 @@ class _builderTextFiel extends StatelessWidget {
   final String name;
   final String hintText;
   final controller;
-  CategoryController categoryController;
+  SliderController sliderController;
 
   final int numLine;
   _builderTextFiel(
       {Key? key,
       required this.name,
-      required this.categoryController,
+      required this.sliderController,
       required this.hintText,
       required this.numLine,
       required this.controller})

@@ -8,6 +8,7 @@ class ProductsController extends GetxController {
   final StorageService storageService = StorageService();
   var products = <Product>[].obs;
   var productsOfCategory = <Product>[].obs;
+  var productsOfCategoryAndLimit = <Product>[].obs;
   @override
   void onInit() {
     products.bindStream(database.getProducts());
@@ -24,10 +25,23 @@ class ProductsController extends GetxController {
     return productsOfCategory;
   }
 
+  Future<List<Product>> getProductsForCategoryAndLimit(String cid) async {
+    // productsOfCategoryAndLimit.clear();
+
+    productsOfCategoryAndLimit.value =
+        await database.getProductsOfCategoryAndLimit(cid);
+    // print(object)
+    return productsOfCategoryAndLimit;
+  }
+
+  getProductsLimit(String cid) async {
+    productsOfCategoryAndLimit.bindStream(database.getProductsLimit(cid));
+  }
+
   Future<void> addProduct(Product product) async {
     await database.addProduct(product);
-    productsOfCategory.value =
-        await database.getProductsOfCategory(categoryId.value);
+    productsOfCategory.add(product);
+    // await database.getProductsOfCategory(categoryId.value);
   }
 
   Future<void> deleteImage(String imageURL) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/screens/admin_about_shop_screens/admin_about_info.dart';
 import 'package:flutter_fire_base/admin/screens/admin_about_shop_screens/admin_add_about_shop.dart';
 import 'package:flutter_fire_base/admin/screens/admin_about_shop_screens/contact_info.dart';
+import 'package:flutter_fire_base/admin/screens/admin_about_shop_screens/sliders/admin_about_sliders.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -13,11 +14,12 @@ class AdminAboutShopScreen extends StatefulWidget {
 }
 
 class _AdminAboutShopScreenState extends State<AdminAboutShopScreen> {
-  List optionsWidgets = [
-    const AdminInfoWidget(),
-    const AdminContactWidget(),
-    const AdminOptionAboutShopWidget()
-  ];
+  // List optionsWidgets = [
+  //   const AdminInfoWidget(),
+  //   const AdminContactWidget(),
+  //   const AdminOptionAboutShopWidget(),
+  //   const AdminSlidersScreen(),
+  // ];
   final PageController _pageController = PageController();
   double? index = 0;
 
@@ -74,7 +76,7 @@ class _AdminAboutShopScreenState extends State<AdminAboutShopScreen> {
                       });
                     },
                     child: AdminOptionPartWidget(
-                      title: 'الاتصال و التواصل',
+                      title: '  التواصل',
                       icon: FontAwesomeIcons.phone,
                       selected: index == 1,
                     ),
@@ -99,6 +101,25 @@ class _AdminAboutShopScreenState extends State<AdminAboutShopScreen> {
                   const SizedBox(
                     width: 10,
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _pageController.animateToPage(
+                          3,
+                          duration: const Duration(milliseconds: 100),
+                          curve: Curves.linearToEaseOut,
+                        );
+                      });
+                    },
+                    child: AdminOptionPartWidget(
+                      title: ' عارض الصور',
+                      icon: FontAwesomeIcons.image,
+                      selected: index == 3,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
                 ],
               ),
             ),
@@ -117,7 +138,11 @@ class _AdminAboutShopScreenState extends State<AdminAboutShopScreen> {
                     children: const [
                       SingleChildScrollView(child: AdminInfoWidget()),
                       SingleChildScrollView(child: AdminContactWidget()),
-                      SingleChildScrollView(child: AdminOptionAboutShopWidget())
+                      SingleChildScrollView(
+                          child: AdminOptionAboutShopWidget()),
+                      SingleChildScrollView(
+                        child: AdminSlidersScreen(),
+                      )
                     ],
                   ),
                 ),

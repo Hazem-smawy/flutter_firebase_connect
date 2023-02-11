@@ -7,8 +7,6 @@ import 'package:flutter_fire_base/admin/screens/admin_category/admin_new_categor
 import 'package:flutter_fire_base/admin/screens/admin_products/admin_all_products.dart';
 import 'package:flutter_fire_base/admin/screens/utilities/search_widget.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class AdminCategoryScreen extends StatefulWidget {

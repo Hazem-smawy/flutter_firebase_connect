@@ -5,6 +5,7 @@ import 'package:flutter_fire_base/admin/model/contact_model.dart';
 import 'package:flutter_fire_base/admin/model/info_model.dart';
 import 'package:flutter_fire_base/admin/model/order_model.dart' as Order;
 import 'package:flutter_fire_base/admin/model/products_model.dart';
+import 'package:flutter_fire_base/admin/model/slider_model.dart';
 import 'package:flutter_fire_base/admin/model/user_model.dart';
 
 class DatabaseService {
@@ -69,6 +70,27 @@ class DatabaseService {
         .get()
         .then((snap) {
       return snap.docs.map((e) => Product.fromSnapshot(e)).toList();
+    });
+  }
+   Future<List<Product>> getProductsOfCategoryAndLimit(String cid) {
+    return _firebaseFirestore
+        .collection('products')
+        .where('cid', isEqualTo: cid)
+        .limit(4)
+        .get()
+        .then((snap) {
+      return snap.docs.map((e) => Product.fromSnapshot(e)).toList();
+    });
+  }
+
+  Stream<List<Product>> getProductsLimit(String cid) {
+    return _firebaseFirestore
+        .collection('products')
+        .where('cid', isEqualTo: cid)
+        .limit(4)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((e) => Product.fromSnapshot(e)).toList();
     });
   }
 
@@ -254,7 +276,7 @@ class DatabaseService {
     await doc.set(order.toMap());
   }
 
-    Future<void> updateOrder(Order.Order order, String field, dynamic newValue) {
+  Future<void> updateOrder(Order.Order order, String field, dynamic newValue) {
     return _firebaseFirestore
         .collection('orders')
         .where('id', isEqualTo: order.id)
@@ -264,5 +286,47 @@ class DatabaseService {
                 {field: newValue},
               ),
             });
+  }
+
+  // slider
+
+  Stream<List<ShowSlider>> getSliders() {
+    return _firebaseFirestore.collection('sliders').snapshots().map((snapshot) {
+      return snapshot.docs.map((e) => ShowSlider.fromSnapshot(e)).toList();
+    });
+  }
+
+  Future<void> addSlider(ShowSlider slider) {
+    return _firebaseFirestore.collection('sliders').add(slider.toMap());
+  }
+
+  Future<void> updateSlider(ShowSlider slider) {
+    final json = slider.toMap();
+    return _firebaseFirestore
+        .collection('sliders')
+        .where('id', isEqualTo: slider.id)
+        .get()
+        .then((value) => value.docs.first.reference.update(json));
+  }
+
+  Future<void> updateSliderField(
+      ShowSlider slider, String field, dynamic newValue) {
+    return _firebaseFirestore
+        .collection('sliders')
+        .where('id', isEqualTo: slider.id)
+        .get()
+        .then((value) => {
+              value.docs.first.reference.update(
+                {field: newValue},
+              ),
+            });
+  }
+
+  Future<void> deleteSlider(String id) {
+    return _firebaseFirestore
+        .collection('sliders')
+        .where('id', isEqualTo: id)
+        .get()
+        .then((value) => {value.docs.first.reference.delete()});
   }
 }

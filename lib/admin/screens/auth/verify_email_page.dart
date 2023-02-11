@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/screens/auth/utils.dart';
-import 'package:flutter_fire_base/admin/screens/home/bottom_navigation.dart';
+import 'package:flutter_fire_base/client/home/client_bottom_navigation.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 
 class VerifyEmailPage extends StatefulWidget {
@@ -77,7 +77,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   @override
   Widget build(BuildContext context) => isEmailVerified
-      ? const AdminBottomNavigation()
+      ? const ClientBottomNavigation()
       : Scaffold(
           body: Container(
             height: MediaQuery.of(context).size.height,

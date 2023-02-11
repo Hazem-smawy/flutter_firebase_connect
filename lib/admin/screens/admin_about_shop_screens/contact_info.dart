@@ -154,27 +154,27 @@ class _AdminContactWidgetState extends State<AdminContactWidget> {
                           try {
                             aboutController.upload.value = true;
                             var contact = Contact(
-                                phone: aboutController.newContact['phone'] ??
-                                    snapshot.data?.phone,
-                                mobile: aboutController.newContact['mobile'] ??
-                                    snapshot.data?.mobile,
-                                email: aboutController.newContact['email'] ??
-                                    snapshot.data?.email,
-                                facebook:
-                                    aboutController.newContact['facebook'] ??
-                                        snapshot.data?.facebook,
-                                whatsapp:
-                                    aboutController.newContact['whatsapp'] ??
-                                        snapshot.data?.whatsapp,
-                                telegram:
-                                    aboutController.newContact['telegram'] ??
-                                        snapshot.data?.telegram,
-                                instegram:
-                                    aboutController.newContact['instegram'] ??
-                                        snapshot.data?.phone,
-                                twitter:
-                                    aboutController.newContact['twitter'] ??
-                                        snapshot.data?.phone);
+                              phone: aboutController.newContact['phone'] ??
+                                  snapshot.data?.phone,
+                              mobile: aboutController.newContact['mobile'] ??
+                                  snapshot.data?.mobile,
+                              email: aboutController.newContact['email'] ??
+                                  snapshot.data?.email,
+                              facebook:
+                                  aboutController.newContact['facebook'] ??
+                                      snapshot.data?.facebook,
+                              whatsapp:
+                                  aboutController.newContact['whatsapp'] ??
+                                      snapshot.data?.whatsapp,
+                              telegram:
+                                  aboutController.newContact['telegram'] ??
+                                      snapshot.data?.telegram,
+                              instegram:
+                                  aboutController.newContact['instegram'] ??
+                                      snapshot.data?.instegram,
+                              twitter: aboutController.newContact['twitter'] ??
+                                  snapshot.data?.twitter,
+                            );
                             await aboutController.setContact(contact);
                             aboutController.upload.value = false;
                           } catch (e) {
@@ -283,14 +283,15 @@ class AdminContactSotialMediaLinks extends StatelessWidget {
           width: 50,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            border: Border.all(color: MyColors.secondaryTextColor),
+            color: MyColors.lessBlackColor,
+            // border: Border.all(color: MyColors.secondaryTextColor),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(
             child: FaIcon(
               icon,
               size: 25,
-              color: color,
+              color: MyColors.bg,
             ),
           ),
         ),
