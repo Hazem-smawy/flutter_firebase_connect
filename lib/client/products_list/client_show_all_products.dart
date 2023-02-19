@@ -1,57 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/product_controller.dart';
-import 'package:flutter_fire_base/admin/model/category_model.dart';
 import 'package:flutter_fire_base/admin/model/products_model.dart';
-import 'package:flutter_fire_base/client/home/client_category_image_widget.dart';
 import 'package:flutter_fire_base/client/home/client_home_screen.dart';
 import 'package:flutter_fire_base/client/home/client_product_item.dart';
-import 'package:flutter_fire_base/client/home/client_show_all_product_header.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-class ClientShowAllProductsScreen extends StatelessWidget {
-  ClientShowAllProductsScreen({
+class ClientShowAllProductsInShop extends StatefulWidget {
+  const ClientShowAllProductsInShop({
     super.key,
-    required this.category,
   });
-  Category category;
-  List items = [
-    {
-      'image': 'assets/images/images.jpg',
-      'title':
-          'الوصف للمنتج يضهر هنا اسم المنتج هنا الوصف للمنتج يضهر هنا اسم المنتج هنا',
-      'price': '200'
-    },
-    {
-      'image': 'assets/images/images2.jpg',
-      'title':
-          'الوصف للمنتج يضهر هنا اسم المنتج هنا الوصف للمنتج يضهر هنا اسم المنتج هنا',
-      'price': '100'
-    },
-    {
-      'image': 'assets/images/images3.jpg',
-      'title': 'الوصف للمنتج يضهر هنا اسم المنتج هنا اسم المنتج هنا',
-      'price': '300'
-    },
-    {
-      'image': 'assets/images/images4.jpg',
-      'title':
-          ' للمنتج يضهر هنا اسم المنتج هنا الوصف الوصف للمنتج يضهر هنا اسم المنتج هنا الوصف للمنتج يضهر هنا اسم المنتج هنا',
-      'price': '200'
-    },
-    {
-      'image': 'assets/images/images5.jpg',
-      'title': 'الوصف للمنتج يضهر هنا اسم المنتج هنا  المنتج هنا',
-      'price': '400'
-    },
-    {
-      'image': 'assets/images/background.jpg',
-      'title': 'الوصف للمنتج يضهر هنا اسم المنتج هنا  المنتج هنا',
-      'price': '400'
-    },
-  ];
+
+  @override
+  State<ClientShowAllProductsInShop> createState() =>
+      _ClientShowAllProductsInShopState();
+}
+
+class _ClientShowAllProductsInShopState
+    extends State<ClientShowAllProductsInShop> {
+  List<Product> products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    products = productsController.products;
+  }
+
   ProductsController productsController = Get.find();
+
+  void _runFilter(String searchWord) {
+    List<Product> result = [];
+    if (searchWord.isEmpty) {
+      result = productsController.products;
+    } else {
+      result = productsController.products
+          .where(
+              (p0) => p0.name.toLowerCase().contains(searchWord.toLowerCase()))
+          .toList();
+    }
+    setState(() {
+      products = result;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,63 +54,135 @@ class ClientShowAllProductsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
+                const SizedBox(height: 20),
                 const SizedBox(height: 10),
-                ClientShowAllProductHeaderWidget(
-                  category: category,
-                ),
-                const SizedBox(height: 20),
-                ClientCategoryImageWidget(
-                  image: category.image,
-                ),
-                const SizedBox(height: 20),
                 Container(
-                  width: double.infinity,
-                  // height: MediaQuery.of(context).size.height,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    //color: MyColors.bg,
-                  ),
-                  child: FutureBuilder<List<Product>>(
-                      future: productsController
-                          .getProductsForCategory(category.cid),
-                      builder: (context, snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return SizedBox(
-                              height: MediaQuery.of(context).size.height - 100,
-                              child: const Center(
-                                child: CircularProgressIndicator(),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Get.back(),
+                        child: Container(
+                          height: 45,
+                          width: 45,
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: MyColors.bg,
+                              border: Border.all(
+                                color: MyColors.lessBlackColor,
+                              )),
+                          child: const Center(
+                            child: FaIcon(
+                              FontAwesomeIcons.magnifyingGlass,
+                              size: 18,
+                              color: MyColors.secondaryTextColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                            height: 45,
+                            //padding: const EdgeInsets.all(5),
+                            //  margin: const EdgeInsets.only(right: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: MyColors.bg,
+                                border: Border.all(
+                                  color: MyColors.lessBlackColor,
+                                )),
+                            child: Center(
+                              child: TextField(
+                                onChanged: (value) => _runFilter(value),
+                                textAlign: TextAlign.right,
+                                textDirection: TextDirection.rtl,
+                                style: const TextStyle(
+                                  fontFamily: 'Cairo',
+                                  fontSize: 14,
+                                  color: MyColors.blackColor,
+                                ),
+                                decoration: customInputDecoration('ابحث هنا '),
                               ),
-                            );
-                          case ConnectionState.done:
-                            return MasonryGridView.count(
-                              padding: const EdgeInsets.only(bottom: 20),
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: snapshot.data?.length,
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 15,
-                              crossAxisSpacing: 10,
-                              itemBuilder: ((context, index) =>
-                                  ClientProductItemWidget(
-                                    image: snapshot.data![index].image,
-                                    title: snapshot.data![index].name,
-                                    price: snapshot.data![index].price,
-                                  )),
-                            );
-
-                          default:
-                            return const Text('some error');
-                        }
-                      }),
+                            )),
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                if (products.isEmpty)
+                  Container(
+                    height: 400,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: MyColors.containerColor,
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                if (productsController.products.isNotEmpty)
+                  Container(
+                    width: double.infinity,
+                    // height: MediaQuery.of(context).size.height,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      //color: MyColors.bg,
+                    ),
+                    child: MasonryGridView.count(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: products.length,
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 10,
+                      itemBuilder: ((context, index) =>
+                          ClientProductItemWidget(product: products[index])),
+                    ),
+                  ),
                 const FooterWidget(),
               ],
             )),
       ),
     );
   }
+
+  customInputDecoration(hintText) => InputDecoration(
+        contentPadding: const EdgeInsets.only(top: 10, bottom: 10, right: 10),
+        // hintText: hintText,
+
+        hintText: hintText,
+        border: InputBorder.none,
+        // focusedBorder: OutlineInputBorder(
+        //   borderSide: const BorderSide(color: Colors.green),
+        //   borderRadius: BorderRadius.circular(20),
+        // ),
+        // focusedErrorBorder: OutlineInputBorder(
+        //   borderSide: const BorderSide(color: Colors.red),
+        //   borderRadius: BorderRadius.circular(20),
+        // ),
+        // errorBorder: OutlineInputBorder(
+        //   borderSide: const BorderSide(color: Colors.red),
+        //   borderRadius: BorderRadius.circular(20),
+        // ),
+        // errorStyle: const TextStyle(
+        //   fontFamily: 'Cairo',
+        //   fontSize: 12,
+        //   color: Colors.red,
+        // ),
+        hintStyle: const TextStyle(
+          fontFamily: 'Cairo',
+          fontSize: 12,
+          color: MyColors.secondaryTextColor,
+        ),
+      );
 }
 
 class Tile extends StatelessWidget {

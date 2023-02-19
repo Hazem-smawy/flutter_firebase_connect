@@ -1,12 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_fire_base/admin/screens/admin_about_shop_screens/admin_about_shop_screen.dart';
-import 'package:flutter_fire_base/admin/screens/admin_category/admin_category_screen.dart';
-import 'package:flutter_fire_base/admin/screens/admin_users_manage/admin_users_manage.dart';
+import 'package:flutter_fire_base/admin/screens/utilities/utils.dart';
 import 'package:flutter_fire_base/client/client_categories/client_categories.dart';
 import 'package:flutter_fire_base/client/client_order_screen/client_order_screen.dart';
+import 'package:flutter_fire_base/client/client_search_screen/client_search_screen.dart';
+import 'package:flutter_fire_base/client/client_user_info_screen.dart/client_user_info_screen.dart';
 import 'package:flutter_fire_base/client/home/client_home_screen.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class ClientBottomNavigation extends StatefulWidget {
   const ClientBottomNavigation({super.key});
@@ -18,12 +20,15 @@ class ClientBottomNavigation extends StatefulWidget {
 class _ClientBottomNavigationState extends State<ClientBottomNavigation> {
   int index = 4;
   List<Widget> pages = [
-    const AdminCategoryScreen(),
-    const AdminAboutShopScreen(),
+    //  const AdminCategoryScreen(),
+    //  const AdminAboutShopScreen(),
+    const ClientUserInfoScreen(),
     const ClientOrderScreen(),
-    const ClientCategoriesScreen(),
+    ClientCategoriesScreen(),
+    const ClientSearchScreen(),
     ClientHomeScreen(),
   ];
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -106,17 +111,36 @@ class _ClientBottomNavigationState extends State<ClientBottomNavigation> {
               const SizedBox(
                 height: 50,
               ),
-              const DrawerItemWidget(
-                title: 'الرئيسية ',
-                icon: FontAwesomeIcons.house,
+              GestureDetector(
+                onTap: () => Get.offAll(() => const ClientBottomNavigation()),
+                child: const DrawerItemWidget(
+                  title: 'الرئيسية ',
+                  icon: FontAwesomeIcons.house,
+                ),
               ),
-              const DrawerItemWidget(
-                title: 'كل الاصناف ',
-                icon: FontAwesomeIcons.barsStaggered,
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    index = 2;
+                    Get.back();
+                  });
+                },
+                child: const DrawerItemWidget(
+                  title: 'كل الاصناف ',
+                  icon: FontAwesomeIcons.barsStaggered,
+                ),
               ),
-              const DrawerItemWidget(
-                title: 'المشتريات ',
-                icon: FontAwesomeIcons.bagShopping,
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    index = 3;
+                    Get.back();
+                  });
+                },
+                child: const DrawerItemWidget(
+                  title: 'المشتريات ',
+                  icon: FontAwesomeIcons.bagShopping,
+                ),
               ),
               const DrawerItemWidget(
                 title: 'التوصيل ',
@@ -131,41 +155,50 @@ class _ClientBottomNavigationState extends State<ClientBottomNavigation> {
                 icon: FontAwesomeIcons.arrowRightToBracket,
               ),
               const Spacer(),
-              Container(
-                margin: const EdgeInsets.only(bottom: 15),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: MyColors.blackColor.withOpacity(0.02),
-                  // border: Border.all(
-                  //   color: Colors.red.withOpacity(0.7), width: 2)
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
-                    Text(
-                      "تسجيل الخروج",
-                      textAlign: TextAlign.end,
-                      textDirection: TextDirection.rtl,
-                      style: TextStyle(
-                        fontFamily: 'Cairo',
-                        color: Colors.red,
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
+              GestureDetector(
+                onTap: () {
+                  if (user != null) {
+                    FirebaseAuth.instance.signOut();
+                    Utils.showSnackBar('تم تسجيل خروجك بنجاح');
+                    Get.back();
+                  }
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 15),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: MyColors.blackColor.withOpacity(0.02),
+                    // border: Border.all(
+                    //   color: Colors.red.withOpacity(0.7), width: 2)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: const [
+                      Text(
+                        "تسجيل الخروج",
+                        textAlign: TextAlign.end,
+                        textDirection: TextDirection.rtl,
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          color: Colors.red,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    FaIcon(
-                      FontAwesomeIcons.arrowRightToBracket,
-                      color: Colors.red,
-                      size: 18,
-                    )
-                  ],
+                      SizedBox(
+                        width: 10,
+                      ),
+                      FaIcon(
+                        FontAwesomeIcons.arrowRightToBracket,
+                        color: Colors.red,
+                        size: 18,
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
@@ -216,23 +249,23 @@ class _ClientBottomNavigationState extends State<ClientBottomNavigation> {
           }),
           items: const [
             BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.circleInfo),
-              label: 'عن المتجر',
-            ),
-            BottomNavigationBarItem(
               icon: FaIcon(FontAwesomeIcons.user),
-              label: 'العملاء',
+              label: ' معلوماتي',
             ),
             BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.calendar),
-              label: ' الطلبات',
+              icon: FaIcon(FontAwesomeIcons.bagShopping),
+              label: 'السلة',
             ),
             BottomNavigationBarItem(
               icon: FaIcon(FontAwesomeIcons.listUl),
-              label: 'الاصناف',
+              label: ' الاصناف',
             ),
             BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.chartLine),
+              icon: FaIcon(FontAwesomeIcons.magnifyingGlass),
+              label: 'البحث',
+            ),
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.house),
               label: 'الرئيسيه',
             ),
           ],

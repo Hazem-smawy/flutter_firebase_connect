@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,22 @@ class _ClientShowSliderWidgetState extends State<ClientShowSliderWidget> {
   CarouselController buttonCarouselController = CarouselController();
 
   double currentIndexPage = 0;
+  Color getBackgroundColor() {
+    List colors = [
+      //767676  cfcfbcb   403735  e1d9ce b9dafd  976745 ffffff 00000
+      const Color(0xff767676),
+      const Color(0xffcfcfbc),
+      const Color(0xff403735),
+      //  const Color(0xffffffff),
+      const Color(0xffe1d9ce),
+      const Color(0xffb9dafd),
+      const Color(0xff976745),
+      const Color(0x0ff00000),
+    ];
+    final random = Random();
+    var i = random.nextInt(colors.length);
+    return colors[i];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +91,7 @@ class _ClientShowSliderWidgetState extends State<ClientShowSliderWidget> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: MyColors.containerColor,
+                                color: getBackgroundColor(),
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),

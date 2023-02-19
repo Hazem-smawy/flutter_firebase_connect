@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/product_controller.dart';
 import 'package:flutter_fire_base/admin/model/products_model.dart';
-import 'package:flutter_fire_base/admin/screens/auth/utils.dart';
+import 'package:flutter_fire_base/admin/screens/utilities/utils.dart';
+import 'package:flutter_fire_base/admin/services/database_service.dart';
 import 'package:flutter_fire_base/admin/services/storage_service.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -35,6 +36,7 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
   bool upload = false;
 
   StorageService storage = StorageService();
+  DatabaseService database = DatabaseService();
   final ProductsController _productsController = Get.find();
   @override
   void initState() {
@@ -298,6 +300,14 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                           showLeftAlignment: true,
                           showAlignmentButtons: true,
                           fontFamilyValues: const {'cairo': 'Cairo'},
+                          fontSizeValues: const {
+                            'Very Small': '8',
+                            'Small': '12',
+                            'Medium': '14',
+                            'Large': '16',
+                            'veryLarg': '18',
+                            'Clear': '0'
+                          },
                           multiRowsDisplay: true,
                           controller: _descriptionController,
                           showBackgroundColorButton: true,
@@ -325,7 +335,6 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                               color: MyColors.bg,
                             ),
                             child: quill.QuillEditor.basic(
-                              
                               controller: _descriptionController,
                               readOnly: false,
                             ),
@@ -378,18 +387,21 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                                   ifAbsent: () => imageName);
                             }
                             var updatedProduct = Product(
-                                id: _productsController.newProduct['id'],
-                                name: _productsController.newProduct['name'],
-                                description: description,
-                                image: _productsController.newProduct['image'],
-                                price: _productsController.newProduct['price'],
-                                offerPrice: _productsController
-                                    .newProduct['offerPrice'],
-                                quantity:
-                                    _productsController.newProduct['quantity'],
-                                cid: _productsController.newProduct['cid'],
-                                status: setStatus ??
-                                    _productsController.newProduct['status']);
+                              id: _productsController.newProduct['id'],
+                              name: _productsController.newProduct['name'],
+                              description: description,
+                              image: _productsController.newProduct['image'],
+                              price: _productsController.newProduct['price'],
+                              offerPrice:
+                                  _productsController.newProduct['offerPrice'],
+                              quantity:
+                                  _productsController.newProduct['quantity'],
+                              cid: _productsController.newProduct['cid'],
+                              status: setStatus ??
+                                  _productsController.newProduct['status'],
+                              createAt:
+                                  _productsController.newProduct['createAt'],
+                            );
 
                             if (updatedProduct.name.isNotEmpty &&
                                 updatedProduct.description.isNotEmpty &&
@@ -403,6 +415,48 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                             _productsController.upload.value = false;
                             _descriptionController.clear();
                             Get.back();
+                            Get.defaultDialog(
+                                title: '',
+                                // backgroundColor: MyColors.bg.withOpacity(0.2),
+                                content: SizedBox(
+                                  width: 200,
+                                  height: 200,
+                                  child: Center(
+                                      child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'تم التعديل بنجاح',
+                                        style: TextStyle(
+                                          color: MyColors.secondaryTextColor,
+                                          fontFamily: 'Cairo',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        // width: 50,height: 50,
+
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border:
+                                              Border.all(color: Colors.green),
+                                        ),
+                                        child: const Icon(
+                                          Icons.check,
+                                          size: 35,
+                                          color: Colors.green,
+                                        ),
+                                      )
+                                    ],
+                                  )),
+                                ));
+                            Future.delayed(const Duration(seconds: 1))
+                                .then((value) => Get.back());
                             return;
                           }
                           var newProduct = _productsController.newProduct;
@@ -412,8 +466,17 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                               imagePicked == null &&
                               newProduct['quantity'] == null) return;
                           _productsController.upload.value = true;
-                          const uuid = Uuid();
-                          var id = uuid.v1();
+                          
+
+                            Product? lastProduct =
+                                          await database.getLastIdForProducts();
+                                      String lastId = '0';
+                                      if (lastProduct != null) {
+                                        lastId = lastProduct.id;
+                                      }
+                                      String id =
+                                          (int.parse(lastId) + 1).toString();
+                          
 
                           try {
                             await storage.uploadImage(
@@ -431,6 +494,7 @@ class AdminCreateNewProductState extends State<AdminCreateNewProduct> {
                               quantity: newProduct['quantity'],
                               status: setStatus ?? false,
                               cid: _productsController.categoryId.value,
+                              createAt: DateTime.now(),
                             );
                             // print(product);
                             _productsController.newProduct.clear();

@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/admin_user_controller.dart';
-import 'package:flutter_fire_base/admin/screens/auth/utils.dart';
+import 'package:flutter_fire_base/admin/screens/utilities/utils.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -37,170 +37,186 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            alignment: AlignmentDirectional.topCenter,
-            children: [
-              Positioned(
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: MyColors.bg,
-                  child: Image.asset(
-                    'assets/images/background.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
+        child: Column(
+          //alignment: AlignmentDirectional.topCenter,
+          children: [
+            Container(
+              // height: double.infinity,
+              margin: const EdgeInsets.only(
+                top: 40,
+                left: 20,
+                right: 20,
               ),
-              Positioned(
-                child: Container(
-                  height: double.infinity,
-                  margin: const EdgeInsets.only(
-                    top: 250,
-                    left: 20,
-                    right: 20,
+              padding: const EdgeInsets.all(30),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                //color: MyColors.lessBlackColor,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: MyColors.lessBlackColor,
+                    ),
+                    child: const Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.user,
+                        size: 30,
+                        color: MyColors.secondaryColor,
+                      ),
+                    ),
                   ),
-                  padding: const EdgeInsets.all(30),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: MyColors.lessBlackColor.withOpacity(0.3),
+                  const SizedBox(
+                    height: 30,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(
-                        height: 50,
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: MyColors.lessBlackColor.withOpacity(0.7),
+                    ),
+                    child: TextFormField(
+                      style: const TextStyle(
+                        fontFamily: 'Cairo',
+                        fontSize: 12,
+                        color: MyColors.secondaryColor,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: MyColors.secondaryColor,
-                        ),
-                        child: TextFormField(
-                          textAlign: TextAlign.right,
-                          controller: nameController,
-                          textInputAction: TextInputAction.next,
-                          decoration: customInputDecoration(
-                            'الاسم',
-                            FontAwesomeIcons.user,
-                          ),
-                        ),
+                      textAlign: TextAlign.right,
+                      controller: nameController,
+                      textInputAction: TextInputAction.next,
+                      decoration: customInputDecoration(
+                        'الاسم',
+                        FontAwesomeIcons.user,
                       ),
-                      const SizedBox(
-                        height: 20,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: MyColors.lessBlackColor.withOpacity(0.7),
+                    ),
+                    child: TextFormField(
+                      style: const TextStyle(
+                        fontFamily: 'Cairo',
+                        fontSize: 12,
+                        color: MyColors.secondaryColor,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: MyColors.secondaryColor,
-                        ),
-                        child: TextFormField(
-                          textAlign: TextAlign.right,
-                          controller: emailController,
-                          textInputAction: TextInputAction.next,
-                          decoration: customInputDecoration(
-                              'الايميل', Icons.email_outlined),
-                        ),
+                      textAlign: TextAlign.right,
+                      controller: emailController,
+                      textInputAction: TextInputAction.next,
+                      decoration: customInputDecoration(
+                          'الايميل', Icons.email_outlined),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: MyColors.lessBlackColor.withOpacity(0.7),
+                    ),
+                    child: TextFormField(
+                      style: const TextStyle(
+                        fontFamily: 'Cairo',
+                        fontSize: 12,
+                        color: MyColors.secondaryColor,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(
-                        height: 20,
+                      obscureText: true,
+                      textAlign: TextAlign.right,
+                      controller: passwordController,
+                      textInputAction: TextInputAction.next,
+                      decoration: customInputDecoration(
+                        'كلمة المرور',
+                        Icons.lock_open,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: MyColors.secondaryColor,
-                        ),
-                        child: TextFormField(
-                          obscureText: true,
-                          textAlign: TextAlign.right,
-                          controller: passwordController,
-                          textInputAction: TextInputAction.next,
-                          decoration: customInputDecoration(
-                            'كلمة المرور',
-                            Icons.lock_open,
-                          ),
-                        ),
+                    ),
+                  ),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(20),
+                  //     color: MyColors.lessBlackColor.withOpacity(0.7),
+                  //   ),
+                  //   child: TextFormField(
+                  //     obscureText: true,
+                  //     textAlign: TextAlign.right,
+                  //     controller: repeatePasswordController,
+                  //     textInputAction: TextInputAction.next,
+                  //     decoration: customInputDecoration(
+                  //       ' اعد كتابة كلمة المرور',
+                  //       Icons.lock_open,
+                  //     ),
+                  //   ),
+                  // ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      signUp();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        backgroundColor: MyColors.blackColor,
+                        minimumSize: const Size.fromHeight(50)),
+                    icon: const Icon(Icons.lock_open),
+                    label: const Text(
+                      ' انشاء حساب',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(
-                        height: 20,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  RichText(
+                    textDirection: TextDirection.rtl,
+                    text: TextSpan(
+                      style: const TextStyle(
+                        color: MyColors.secondaryTextColor,
+                        fontSize: 14,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.bold,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: MyColors.secondaryColor,
-                        ),
-                        child: TextFormField(
-                          obscureText: true,
-                          textAlign: TextAlign.right,
-                          controller: repeatePasswordController,
-                          textInputAction: TextInputAction.next,
-                          decoration: customInputDecoration(
-                            ' اعد كتابة كلمة المرور',
-                            Icons.lock_open,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          signUp();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            backgroundColor: MyColors.primaryColor,
-                            minimumSize: const Size.fromHeight(50)),
-                        icon: const Icon(Icons.lock_open),
-                        label: const Text(
-                          ' انشاء حساب',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Cairo',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      RichText(
-                        textDirection: TextDirection.rtl,
-                        text: TextSpan(
+                      text: '  لدي حساب من قبل',
+                      children: [
+                        TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = widget.onClickedSignUp,
+                          text: ' تسجيل الدخول',
                           style: const TextStyle(
-                            color: MyColors.secondaryTextColor,
-                            fontSize: 17,
-                            fontFamily: 'Cairo',
                             fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            decoration: TextDecoration.underline,
+                            color: Colors.red,
                           ),
-                          text: '  لدي حساب من قبل',
-                          children: [
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = widget.onClickedSignUp,
-                              text: ' تسجيل الدخول',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                                decoration: TextDecoration.underline,
-                                color: Colors.red,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                    ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -214,35 +230,35 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           alignment: Alignment.center,
           child: FaIcon(
             icon,
-            color: MyColors.secondaryTextColor,
+            color: MyColors.containerColor.withOpacity(0.8),
           ),
         ),
         hintText: hintText,
         border: InputBorder.none,
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.green),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
-          borderRadius: BorderRadius.circular(20),
-        ),
+        // focusedBorder: OutlineInputBorder(
+        //   borderSide: const BorderSide(color: Colors.green),
+        //   borderRadius: BorderRadius.circular(20),
+        // ),
+        // focusedErrorBorder: OutlineInputBorder(
+        //   borderSide: const BorderSide(color: Colors.red),
+        //   borderRadius: BorderRadius.circular(20),
+        // ),
+        // errorBorder: OutlineInputBorder(
+        //   borderSide: const BorderSide(color: Colors.red),
+        //   borderRadius: BorderRadius.circular(20),
+        // ),
         errorStyle: const TextStyle(
           fontFamily: 'Cairo',
           fontSize: 12,
           color: Colors.red,
         ),
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           fontFamily: 'Cairo',
           fontSize: 12,
-          color: MyColors.secondaryTextColor,
+          color: MyColors.containerColor.withOpacity(0.8),
+          fontWeight: FontWeight.normal,
         ),
       );
-
   Future signUp() async {
     Get.defaultDialog(
         title: '',
@@ -266,12 +282,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
       return;
     }
-    if (passwordController.text.trim() !=
-        repeatePasswordController.text.trim()) {
-      Utils.showSnackBar('اعد كتابة كلمة المروور بشكل صحيح');
-      Get.back();
-      return;
-    }
+    // if (passwordController.text.trim() !=
+    //     repeatePasswordController.text.trim()) {
+    //   Utils.showSnackBar('اعد كتابة كلمة المروور بشكل صحيح');
+    //   Get.back();
+    //   return;
+    // }
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),

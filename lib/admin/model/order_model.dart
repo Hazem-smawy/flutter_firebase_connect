@@ -7,9 +7,98 @@ import 'package:equatable/equatable.dart';
 // ignore: non_constant_identifier_names
 enum OrderStatus { Pending, Recived, Deleverd, Done }
 
+class OrderCompleted extends Equatable {
+  final String id;
+  final String country;
+  final String city;
+  final String address;
+  final String image;
+  final Order order;
+  final DateTime completedOn;
+  const OrderCompleted({
+    required this.id,
+    required this.country,
+    required this.city,
+    required this.address,
+    required this.image,
+    required this.order,
+    required this.completedOn,
+  });
+
+  OrderCompleted copyWith({
+    String? id,
+    String? country,
+    String? city,
+    String? address,
+    String? image,
+    Order? order,
+    DateTime? completedOn,
+  }) {
+    return OrderCompleted(
+      id: id ?? this.id,
+      country: country ?? this.country,
+      city: city ?? this.city,
+      address: address ?? this.address,
+      image: image ?? this.image,
+      order: order ?? this.order,
+      completedOn: completedOn ?? this.completedOn,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'country': country,
+      'city': city,
+      'address': address,
+      'image': image,
+      'order': order.toMap(),
+      'completedOn': completedOn.millisecondsSinceEpoch,
+    };
+  }
+
+  factory OrderCompleted.fromSnapshot(DocumentSnapshot map) {
+    return OrderCompleted(
+      id: map['id'] as String,
+      country: map['country'] as String,
+      city: map['city'] as String,
+      address: map['address'] as String,
+      image: map['image'] as String,
+      order: Order.fromMap(map['order'] as Map<String, dynamic>),
+      completedOn:
+          DateTime.fromMillisecondsSinceEpoch(map['completedOn'] as int),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory OrderCompleted.fromMap(String source) =>
+      OrderCompleted.fromSnapshot(json.decode(source) as DocumentSnapshot);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  List<Object> get props {
+    return [
+      id,
+      country,
+      city,
+      address,
+      image,
+      order,
+      completedOn,
+    ];
+  }
+
+  factory OrderCompleted.fromJson(String source) =>
+      OrderCompleted.fromSnapshot(json.decode(source) as DocumentSnapshot);
+}
+
 class Order extends Equatable {
-  final int id;
+  final String id;
   final String customerId;
+  final String customerName;
   final String orderNote;
   final DateTime orderOn;
   final int currencyId;
@@ -17,17 +106,20 @@ class Order extends Equatable {
   final double amountDescount;
   final double totalAbount;
   int status;
+  int isCompleted;
   final List<OrderDetails> orderDetails;
   Order({
     required this.id,
     required this.customerId,
+    required this.customerName,
     required this.orderNote,
     required this.orderOn,
     required this.currencyId,
     required this.subtotal,
     required this.amountDescount,
     required this.totalAbount,
-    this.status = 1,
+    this.status = 0,
+    this.isCompleted = 0,
     required this.orderDetails,
   });
 
@@ -36,6 +128,7 @@ class Order extends Equatable {
     return [
       id,
       customerId,
+      customerName,
       orderNote,
       orderOn,
       currencyId,
@@ -43,13 +136,15 @@ class Order extends Equatable {
       amountDescount,
       totalAbount,
       status,
+      isCompleted,
       orderDetails,
     ];
   }
 
   Order copyWith({
-    int? id,
+    String? id,
     String? customerId,
+    String? customerName,
     String? orderNote,
     DateTime? orderOn,
     int? currencyId,
@@ -57,11 +152,13 @@ class Order extends Equatable {
     double? amountDescount,
     double? totalAbount,
     int? status,
+    int? isCompleted,
     List<OrderDetails>? orderDetails,
   }) {
     return Order(
       id: id ?? this.id,
       customerId: customerId ?? this.customerId,
+      customerName: customerName ?? this.customerName,
       orderNote: orderNote ?? this.orderNote,
       orderOn: orderOn ?? this.orderOn,
       currencyId: currencyId ?? this.currencyId,
@@ -69,6 +166,7 @@ class Order extends Equatable {
       amountDescount: amountDescount ?? this.amountDescount,
       totalAbount: totalAbount ?? this.totalAbount,
       status: status ?? this.status,
+      isCompleted: isCompleted ?? this.isCompleted,
       orderDetails: orderDetails ?? this.orderDetails,
     );
   }
@@ -77,6 +175,7 @@ class Order extends Equatable {
     return <String, dynamic>{
       'id': id,
       'customerId': customerId,
+      'customerName': customerName,
       'orderNote': orderNote,
       'orderOn': orderOn.millisecondsSinceEpoch,
       'currencyId': currencyId,
@@ -84,14 +183,36 @@ class Order extends Equatable {
       'amountDescount': amountDescount,
       'totalAbount': totalAbount,
       'status': status,
+      'isCompleted': isCompleted,
       'orderDetails': orderDetails.map((x) => x.toMap()).toList(),
     };
   }
 
   factory Order.fromSnapshot(DocumentSnapshot map) {
     return Order(
-      id: map['id'] as int,
+      id: map['id'] as String,
       customerId: map['customerId'] as String,
+      customerName: map['customerName'] as String,
+      orderNote: map['orderNote'] as String,
+      orderOn: DateTime.fromMillisecondsSinceEpoch(map['orderOn'] as int),
+      currencyId: map['currencyId'] as int,
+      subtotal: map['subtotal'] as double,
+      amountDescount: map['amountDescount'] as double,
+      totalAbount: map['totalAbount'] as double,
+      status: map['status'] as int,
+      orderDetails: List<OrderDetails>.from(
+        (map['orderDetails'] as List<dynamic>).map<OrderDetails>(
+          (x) => OrderDetails.fromSnapshot(x as Map<String, dynamic>),
+        ),
+      ),
+    );
+  }
+
+  factory Order.fromMap(Map<String, dynamic> map) {
+    return Order(
+      id: map['id'] as String,
+      customerId: map['customerId'] as String,
+      customerName: map['customerName'] as String,
       orderNote: map['orderNote'] as String,
       orderOn: DateTime.fromMillisecondsSinceEpoch(map['orderOn'] as int),
       currencyId: map['currencyId'] as int,
@@ -114,19 +235,36 @@ class Order extends Equatable {
 
   @override
   bool get stringify => true;
+
+  // factory Order.fromMap(Map<String, dynamic> map) {
+  //   return Order(
+  //     id: map['id'] as String,
+  //     customerId: map['customerId'] as String,
+  //     customerName: map['customerName'] as String,
+  //     orderNote: map['orderNote'] as String,
+  //     orderOn: DateTime.fromMillisecondsSinceEpoch(map['orderOn'] as int),
+  //     currencyId: map['currencyId'] as int,
+  //     subtotal: map['subtotal'] as double,
+  //     amountDescount: map['amountDescount'] as double,
+  //     totalAbount: map['totalAbount'] as double,
+  //     status: map['status'] as int,
+  //     isCompleted: map['isCompleted'] as int,
+  //     orderDetails: List<OrderDetails>.from((map['orderDetails'] as List<int>).map<OrderDetails>((x) => OrderDetails.fromMap(x as Map<String,dynamic>),),),
+  //   );
+  // }
 }
 
 class OrderDetails extends Equatable {
   final int id;
-  final int productId;
-  final int itemQuantity;
-  final double price;
+  final String productId;
+  int itemQuantity;
+  double price;
   final String note;
-  const OrderDetails({
+  OrderDetails({
     required this.id,
     required this.productId,
-    required this.itemQuantity,
-    required this.price,
+    this.itemQuantity = 1,
+    this.price = 0,
     required this.note,
   });
 
@@ -143,7 +281,7 @@ class OrderDetails extends Equatable {
 
   OrderDetails copyWith({
     int? id,
-    int? productId,
+    String? productId,
     int? itemQuantity,
     double? price,
     String? note,
@@ -170,7 +308,7 @@ class OrderDetails extends Equatable {
   factory OrderDetails.fromSnapshot(Map<String, dynamic> map) {
     return OrderDetails(
       id: map['id'] as int,
-      productId: map['productId'] as int,
+      productId: map['productId'] as String,
       itemQuantity: map['itemQuantity'] as int,
       price: map['price'] as double,
       note: map['note'] as String,

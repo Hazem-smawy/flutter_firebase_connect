@@ -1,81 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_fire_base/admin/controller/category_controller.dart';
+import 'package:flutter_fire_base/admin/model/category_model.dart';
+import 'package:flutter_fire_base/client/products_list/client_show_all_category.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
+import 'package:get/get.dart';
 
 class ClientCategoriesScreen extends StatelessWidget {
-  const ClientCategoriesScreen({super.key});
+  ClientCategoriesScreen({super.key});
+  CategoryController categoryController = Get.put(CategoryController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: const [
-            ClientCategoryItemWidget(
-              image: 'assets/images/category1.jpg',
-            ),
+      body: Column(
+        children: [
+          if (categoryController.categories.isEmpty)
             SizedBox(
-              height: 20,
+              height: MediaQuery.of(context).size.height / 2,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
-            ClientCategoryItemWidget(
-              image: 'assets/images/category2.jpg',
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            ClientCategoryItemWidget(
-              image: 'assets/images/category3.jpg',
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            ClientCategoryItemWidget(
-              image: 'assets/images/category4.jpg',
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            ClientCategoryItemWidget(
-              image: 'assets/images/category5.jpg',
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+          if (categoryController.categories.isNotEmpty)
+            ListView.builder(
+                shrinkWrap: true,
+                itemCount: categoryController.categories.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () => Get.to(ClientShowAllCategoryProductsScreen(
+                        category: categoryController.categories[index])),
+                    child: ClientCategoryItemWidget(
+                      category: categoryController.categories[index],
+                    ),
+                  );
+                })
+        ],
       ),
     );
   }
 }
 
 class ClientCategoryItemWidget extends StatelessWidget {
-  final image;
+  final Category category;
   const ClientCategoryItemWidget({
     Key? key,
-    required this.image,
+    required this.category,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(top: 15, left: 20, right: 20),
       decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(10), boxShadow: [
+          BoxDecoration(borderRadius: BorderRadius.circular(15), boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.08),
           offset: const Offset(1, 1),
           blurRadius: 5,
         )
       ]),
-      height: 130,
+      height: 100,
       child: Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: Image.asset(
-              image,
+            child: Image.network(
+              category.image,
               width: double.infinity,
+              // height: double.infinity,
               fit: BoxFit.cover,
+              errorBuilder: (context, exception, stackTrack) => const SizedBox(
+                height: 150,
+                child: Center(
+                  child: Icon(
+                    Icons.error,
+                  ),
+                ),
+              ),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return SizedBox(
+                  height: 150,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: MyColors.primaryColor,
+                      backgroundColor: Colors.white,
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : null,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           Container(
@@ -89,6 +109,7 @@ class ClientCategoryItemWidget extends StatelessWidget {
                 colors: [
                   Colors.transparent,
                   // Colors.black,
+                  // Colors.black.withOpacity(0.5),
                   Colors.black,
                 ],
                 begin: Alignment.topCenter,
@@ -99,21 +120,21 @@ class ClientCategoryItemWidget extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
-                  'يضهر هنا اسم ',
-                  style: TextStyle(
+                  category.title,
+                  style: const TextStyle(
                     fontFamily: 'Cairo',
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: MyColors.bg,
+                    color: Color.fromARGB(255, 207, 205, 205),
                   ),
                   maxLines: 1,
                   textAlign: TextAlign.end,
                 ),
                 Text(
-                  'الوصف للمنتج يضهر هنا اسم المنتج هنا  المنتج هنا',
-                  style: TextStyle(
+                  category.description,
+                  style: const TextStyle(
                     fontFamily: 'Cairo',
                     fontSize: 10,
                     color: MyColors.containerColor,

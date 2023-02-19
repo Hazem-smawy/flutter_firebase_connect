@@ -5,7 +5,7 @@ import 'package:flutter_fire_base/admin/screens/admin_order_screen/admin_order_d
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as dateFormat;
 
 class AdminOrderScreen extends StatefulWidget {
   const AdminOrderScreen({super.key});
@@ -25,6 +25,8 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
+    //orderController.todaysOrderCompleted.value =
+    // orderController.todaysOrderCompleted.reversed.toList();
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(15.0),
@@ -56,14 +58,44 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
               const SizedBox(
                 height: 20,
               ),
-              if (orderController.todaysOrder.isEmpty &&
-                  orderController.lastWeekOrder.isEmpty &&
-                  orderController.lastMonthOrder.isEmpty)
-                const SizedBox(),
+              if (orderController.todaysOrderCompleted.isEmpty &&
+                  orderController.lastWeekOrderCompleted.isEmpty &&
+                  orderController.lastMonthOrderCompleted.isEmpty)
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  height: 400,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: MyColors.containerColor,
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.circleInfo,
+                          color: MyColors.primaryColor.withOpacity(0.7),
+                          size: 40,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text(
+                          'لاتوجد اي طلبات بعد',
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            fontSize: 12,
+                            color: MyColors.secondaryTextColor,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
 
-              if (orderController.todaysOrder.isNotEmpty ||
-                  orderController.lastWeekOrder.isNotEmpty ||
-                  orderController.lastMonthOrder.isNotEmpty)
+              if (orderController.todaysOrderCompleted.isNotEmpty ||
+                  orderController.lastWeekOrderCompleted.isNotEmpty ||
+                  orderController.lastMonthOrderCompleted.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
@@ -78,7 +110,7 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
                       ]),
                   child: Column(
                     children: [
-                      if (orderController.todaysOrder.isNotEmpty)
+                      if (orderController.todaysOrderCompleted.isNotEmpty)
                         Column(
                           children: [
                             const Center(
@@ -98,19 +130,23 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
                               primary: true,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: orderController.todaysOrder.length,
+                              itemCount:
+                                  orderController.todaysOrderCompleted.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return AdminOrderItemWidget(
-                                  order: orderController.todaysOrder[index],
+                                  order: orderController
+                                      .todaysOrderCompleted[index].order,
                                   section: 0,
                                   index: index,
+                                  orderCompleted: orderController
+                                      .todaysOrderCompleted[index],
                                 );
                               },
                             ),
                           ],
                         ),
                       // weeks
-                      if (orderController.lastWeekOrder.isNotEmpty)
+                      if (orderController.lastWeekOrderCompleted.isNotEmpty)
                         Column(
                           children: [
                             const SizedBox(
@@ -133,19 +169,23 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
                               primary: true,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: orderController.lastWeekOrder.length,
+                              itemCount:
+                                  orderController.lastWeekOrderCompleted.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return AdminOrderItemWidget(
-                                  order: orderController.lastWeekOrder[index],
+                                  order: orderController
+                                      .lastWeekOrderCompleted[index].order,
                                   section: 1,
                                   index: index,
+                                  orderCompleted: orderController
+                                      .lastWeekOrderCompleted[index],
                                 );
                               },
                             ),
                           ],
                         ),
                       // month
-                      if (orderController.lastMonthOrder.isNotEmpty)
+                      if (orderController.lastMonthOrderCompleted.isNotEmpty)
                         Column(
                           children: [
                             const SizedBox(
@@ -168,12 +208,16 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
                               primary: true,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: orderController.lastMonthOrder.length,
+                              itemCount: orderController
+                                  .lastMonthOrderCompleted.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return AdminOrderItemWidget(
                                   section: 2,
-                                  order: orderController.lastMonthOrder[index],
+                                  order: orderController
+                                      .lastMonthOrderCompleted[index].order,
                                   index: index,
+                                  orderCompleted: orderController
+                                      .lastMonthOrderCompleted[index],
                                 );
                               },
                             ),
@@ -243,11 +287,13 @@ class AdminOrderItemWidget extends StatelessWidget {
   Order order;
   final int section;
   final int index;
+  OrderCompleted orderCompleted;
   AdminOrderItemWidget({
     Key? key,
     required this.order,
     required this.section,
     required this.index,
+    required this.orderCompleted,
   }) : super(key: key);
 
   String getStatusName(int value) {
@@ -280,6 +326,8 @@ class AdminOrderItemWidget extends StatelessWidget {
     }
   }
 
+  OrderController orderController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -287,6 +335,7 @@ class AdminOrderItemWidget extends StatelessWidget {
             section: section,
             index: index,
             order: order,
+            orderCompleted: orderCompleted,
           )),
       child: Container(
         margin: const EdgeInsets.only(top: 10),
@@ -363,7 +412,7 @@ class AdminOrderItemWidget extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      DateFormat.Hm().format(order.orderOn),
+                      dateFormat.DateFormat.Hm().format(order.orderOn),
                       style: const TextStyle(
                         color: MyColors.bg,
                         fontSize: 8,
@@ -391,7 +440,7 @@ class AdminOrderItemWidget extends StatelessWidget {
                         ),
                         children: [
                           TextSpan(
-                            text: order.id.toString(),
+                            text: orderCompleted.id,
                             style: const TextStyle(
                               color: MyColors.blackColor,
                               fontSize: 14,
@@ -402,7 +451,7 @@ class AdminOrderItemWidget extends StatelessWidget {
                   ),
                   RichText(
                     textAlign: TextAlign.right,
-                    //textDirection: TextDirection.rtl,
+                    textDirection: TextDirection.rtl,
                     text: TextSpan(
                         text: 'الاسم : ',
                         style: const TextStyle(
@@ -412,7 +461,7 @@ class AdminOrderItemWidget extends StatelessWidget {
                         ),
                         children: [
                           TextSpan(
-                            text: order.customerId,
+                            text: order.customerName,
                             style: const TextStyle(
                               color: MyColors.blackColor,
                               fontSize: 12,

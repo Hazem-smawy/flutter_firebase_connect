@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/product_controller.dart';
-import 'package:flutter_fire_base/admin/screens/admin_products/admin_add_product.dart';
 import 'package:flutter_fire_base/admin/screens/admin_products/admin_product_item.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -117,35 +116,35 @@ class _AdminAllProductsScreenState extends State<AdminAllProductsScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              MyColors.primaryColor.withOpacity(0.8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        onPressed: () {
-                          _productsController.newProduct.clear();
-                          Get.to(() => const AdminCreateNewProduct());
-                          // _categoryController.newCategory.clear();
-                          // _categoryController.toggleShowNewCategory();
-                        },
-                        icon: const FaIcon(FontAwesomeIcons.plus),
-                        label: const Text(
-                          ' اضف منتج',
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     ElevatedButton.icon(
+                  //       style: ElevatedButton.styleFrom(
+                  //         backgroundColor:
+                  //             MyColors.primaryColor.withOpacity(0.8),
+                  //         shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(15),
+                  //         ),
+                  //       ),
+                  //       onPressed: () {
+                  //         _productsController.newProduct.clear();
+                  //         Get.to(() => const AdminCreateNewProduct());
+                  //         // _categoryController.newCategory.clear();
+                  //         // _categoryController.toggleShowNewCategory();
+                  //       },
+                  //       icon: const FaIcon(FontAwesomeIcons.plus),
+                  //       label: const Text(
+                  //         ' اضف منتج',
+                  //         style: TextStyle(
+                  //           fontFamily: 'Cairo',
+                  //           fontSize: 15,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(
                     height: 20,
                   ),

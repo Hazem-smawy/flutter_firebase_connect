@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_fire_base/admin/screens/utilities/utils.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 
-class Utils {
-  static final messengerKey = GlobalKey<ScaffoldMessengerState>();
+class ClientUtilities {
+  static final messengerKey = Utils.messengerKey;
 
-  static showSnackBar(String? text, {String type = ''}) {
+  static showSnackBarWidget(String? text, {String type = ''}) {
     if (text == null) return;
 
     final snakBar = SnackBar(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: Text(
         text,
         textAlign: TextAlign.right,
@@ -17,7 +19,7 @@ class Utils {
           fontSize: 14,
         ),
       ),
-      backgroundColor: type == '' ? Colors.red : Colors.green,
+      backgroundColor: MyColors.primaryColor,
     );
 
     messengerKey.currentState!

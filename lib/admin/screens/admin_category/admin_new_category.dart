@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/category_controller.dart';
 import 'package:flutter_fire_base/admin/model/category_model.dart';
+import 'package:flutter_fire_base/admin/services/database_service.dart';
 import 'package:flutter_fire_base/admin/services/storage_service.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
 
 class AdminCreateNewCategory extends StatefulWidget {
   const AdminCreateNewCategory({
@@ -29,6 +29,7 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
   bool upload = false;
 
   StorageService storage = StorageService();
+  DatabaseService database = DatabaseService();
   final CategoryController _categoryController = Get.find();
   @override
   void initState() {
@@ -239,6 +240,8 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                         }
                         var updatedCategory = Category(
                           cid: _categoryController.newCategory['cid'],
+                          createAt: DateTime(
+                              _categoryController.newCategory['createAt']),
                           title: nameController.text.trim(),
                           description: descriptionController.text.trim(),
                           image: currentImage,
@@ -256,8 +259,7 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                         descriptionController.clear();
                         imagePicked = null;
                         setStatus = true;
-                        // print('updated category');
-                        // print(updatedCategory);
+                       
                         setState(() {
                           _categoryController.toggleShowNewCategory();
 
@@ -266,9 +268,17 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                         return;
                       }
                       if (!valid && imagePicked == null) return;
-                      var uuid = const Uuid();
 
                       try {
+                        Category? lastCategory =
+                            await database.getLastIdForCategories();
+
+                        String lastId = '0';
+                        if (lastCategory != null) {
+                          lastId = lastCategory.cid;
+                        }
+                        String id = (int.parse(lastId) + 1).toString();
+
                         setState(() {
                           upload = true;
                         });
@@ -277,12 +287,14 @@ class AdminCreateNewCategoryState extends State<AdminCreateNewCategory> {
                         final imageString = await storage.getDownloadURL(
                             imagePicked!.name, 'category_images');
 
+                        print(id);
                         final category = Category(
-                          cid: uuid.v1(),
+                          cid: id,
                           title: nameController.text.trim(),
                           description: descriptionController.text.trim(),
                           image: imageString,
                           status: setStatus ?? true,
+                          createAt: DateTime.now(),
                           id: 1,
                         );
 

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter_fire_base/admin/model/category_model.dart';
 import 'package:flutter_fire_base/admin/services/database_service.dart';
 import 'package:flutter_fire_base/admin/services/storage_service.dart';
@@ -11,6 +13,10 @@ class CategoryController extends GetxController {
   void onInit() {
     categories.bindStream(database.getCategories());
     super.onInit();
+  }
+
+  Future refreshPage() async {
+    categories.bindStream(database.getCategories());
   }
 
   var showNewCategory = false.obs;
@@ -36,16 +42,16 @@ class CategoryController extends GetxController {
   }
 
   Future<void> deleteImage(String imageURL) async {
-   await storageService.deleteImageURL(imageURL);
+    await storageService.deleteImageURL(imageURL);
   }
 
-  Future<void> deleteCategory(String id, String imageURL)async {
-  await  deleteImage(imageURL);
-  await  database.deleteField(id);
+  Future<void> deleteCategory(String id, String imageURL) async {
+    await deleteImage(imageURL);
+    await database.deleteField(id);
   }
 
-  Future<void> updateDocument(Category category) async{
+  Future<void> updateDocument(Category category) async {
     //print('controller update');
-   await database.updateDoc(category);
+    await database.updateDoc(category);
   }
 }

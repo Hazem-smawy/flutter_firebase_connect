@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/amdin_order_controller.dart';
+import 'package:flutter_fire_base/admin/controller/product_controller.dart';
 import 'package:flutter_fire_base/admin/model/order_model.dart';
+import 'package:flutter_fire_base/admin/model/products_model.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -11,10 +13,12 @@ class AdminOrderDetailsScreen extends StatelessWidget {
       {super.key,
       required this.section,
       required this.order,
+      required this.orderCompleted,
       required this.index});
   final int section;
   Order order;
   final int index;
+  OrderCompleted orderCompleted;
 
   // Initial Selected Value
 
@@ -56,10 +60,17 @@ class AdminOrderDetailsScreen extends StatelessWidget {
   }
 
   OrderController orderController = Get.find();
+  ProductsController productsController = Get.put(ProductsController());
 
   @override
   Widget build(BuildContext context) {
     orderController.orderState.value = getStatusName(order.status);
+    List<Product> products = order.orderDetails.map((order) {
+      return productsController.products
+          .firstWhere((product) => product.id == order.productId);
+    }).toList();
+
+    print(products);
     return SafeArea(
       child: Scaffold(
         // appBar: AppBar(
@@ -117,7 +128,7 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                                         children: [
                                           RichText(
                                               text: TextSpan(
-                                            text: order.customerId,
+                                            text: order.customerName,
                                             style: const TextStyle(
                                               fontFamily: 'Cairo',
                                               fontSize: 16,
@@ -256,7 +267,7 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                                   onChanged: (String? newValue) {
                                     orderController.orderState.value =
                                         newValue!;
-                                    orderController.updateOrder(order, section,
+                                    orderController.updateOrder(orderCompleted, section,
                                         index, getStatusNumber(newValue));
                                     // getStatusName(int.parse(newValue!));
                                   },
@@ -291,12 +302,13 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(horizontal: 10),
                     padding: const EdgeInsets.all(10),
                     child: ListView.builder(
-                      itemCount: order.orderDetails.length,
+                      itemCount: products.length,
                       shrinkWrap: true,
                       //scrollDirection: Axis.horizontal,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (BuildContext context, int index) {
                         return AdminOrderDetailItemWidget(
+                          product: products[index],
                           orderDetails: order.orderDetails[index],
                         );
                       },
@@ -307,34 +319,49 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                   ),
                   Container(
                     // height: 300,
-                    padding: const EdgeInsets.all(20),
-                    margin: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.only(
+                      top: 20,
+                      right: 20,
+                      left: 20,
+                    ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: MyColors.lessBlackColor,
+                      borderRadius: BorderRadius.circular(10),
+                      color: MyColors.containerColor,
                     ),
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              '2000',
-                              style: TextStyle(
-                                color: MyColors.secondaryColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                                fontFamily: 'Cairo',
-                              ),
+                          children: [
+                            RichText(
+                              textDirection: TextDirection.rtl,
+                              text: const TextSpan(
+                                  text: '2989',
+                                  style: TextStyle(
+                                    color: MyColors.lessBlackColor,
+                                    fontSize: 16,
+                                    fontFamily: 'Cairo',
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '  ر.س',
+                                      style: TextStyle(
+                                        color: MyColors.secondaryTextColor,
+                                        fontSize: 10,
+                                        // fontFamily: 'Cairo',
+                                      ),
+                                    ),
+                                  ]),
                             ),
-                            SizedBox(width: 10),
-                            Text(
+                            const SizedBox(width: 10),
+                            const Text(
                               ': السعر ',
                               // textDirection: TextDirection.rtl,
                               style: TextStyle(
-                                color: MyColors.secondaryColor,
-                                fontSize: 16,
+                                color: MyColors.lessBlackColor,
+                                fontSize: 14,
                                 fontFamily: 'Cairo',
                               ),
                             ),
@@ -343,57 +370,86 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                         const Divider(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              '2000',
-                              style: TextStyle(
-                                color: MyColors.secondaryColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                                fontFamily: 'Cairo',
-                              ),
+                          children: [
+                            RichText(
+                              textDirection: TextDirection.rtl,
+                              text: const TextSpan(
+                                  text: '300',
+                                  style: TextStyle(
+                                    color: MyColors.lessBlackColor,
+                                    fontSize: 16,
+                                    fontFamily: 'Cairo',
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '  ر.س',
+                                      style: TextStyle(
+                                        color: MyColors.secondaryTextColor,
+                                        fontSize: 10,
+                                        // fontFamily: 'Cairo',
+                                      ),
+                                    ),
+                                  ]),
                             ),
-                            SizedBox(width: 10),
-                            Text(
+                            const SizedBox(width: 10),
+                            const Text(
                               ': الخصم ',
                               //  textDirection: TextDirection.rtl,
                               style: TextStyle(
-                                color: MyColors.secondaryColor,
-                                fontSize: 16,
+                                color: MyColors.lessBlackColor,
+                                fontSize: 14,
                                 fontFamily: 'Cairo',
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        const Divider(color: MyColors.secondaryTextColor),
+                        //  const SizedBox(height: 20),
+                        const Divider(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              '10030',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 39, 129, 42),
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                                fontFamily: 'Cairo',
-                              ),
+                          children: [
+                            RichText(
+                              textDirection: TextDirection.rtl,
+                              text: TextSpan(
+                                  text: order.totalAbount.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Cairo',
+                                  ),
+                                  children: const [
+                                    TextSpan(
+                                      text: '  ر.س',
+                                      style: TextStyle(
+                                        color: MyColors.secondaryTextColor,
+                                        fontSize: 10,
+                                        // fontFamily: 'Cairo',
+                                      ),
+                                    ),
+                                  ]),
                             ),
-                            SizedBox(width: 10),
-                            Text(
+                            const SizedBox(width: 10),
+                            const Text(
                               ': الاجمالي',
                               // textDirection: TextDirection.rtl,
                               style: TextStyle(
                                 color: Color.fromARGB(255, 39, 129, 42),
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontFamily: 'Cairo',
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
-                        //const Divider(),
+                        const SizedBox(
+                          height: 20,
+                        ),
                       ],
                     ),
+                  ),
+                  const SizedBox(
+                    height: 30,
                   ),
                 ],
               ),
@@ -407,9 +463,11 @@ class AdminOrderDetailsScreen extends StatelessWidget {
 
 class AdminOrderDetailItemWidget extends StatelessWidget {
   OrderDetails orderDetails;
+  Product product;
   AdminOrderDetailItemWidget({
     Key? key,
     required this.orderDetails,
+    required this.product,
   }) : super(key: key);
 
   @override
@@ -511,9 +569,10 @@ class AdminOrderDetailItemWidget extends StatelessWidget {
                   RichText(
                     textAlign: TextAlign.right,
                     textDirection: TextDirection.rtl,
-                    text: const TextSpan(
-                      text: 'اسم المنتج هنا ',
-                      style: TextStyle(
+                    maxLines: 2,
+                    text: TextSpan(
+                      text: product.name,
+                      style: const TextStyle(
                         color: MyColors.blackColor,
                         fontSize: 15,
                         fontFamily: 'Cairo',
@@ -599,6 +658,42 @@ class AdminOrderDetailItemWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: MyColors.lessBlackColor,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    product.image,
+                    width: double.infinity,
+                    // height: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, exception, stackTrack) =>
+                        const SizedBox(
+                      height: 150,
+                      child: Center(
+                        child: Icon(
+                          Icons.error,
+                        ),
+                      ),
+                    ),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return SizedBox(
+                        height: 150,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: MyColors.primaryColor,
+                            backgroundColor: Colors.white,
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_fire_base/admin/screens/auth/utils.dart';
+import 'package:flutter_fire_base/admin/screens/utilities/utils.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -26,80 +26,81 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: double.infinity,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(
-                  'assets/images/background.jpg',
-                ))),
-        padding: const EdgeInsets.all(20),
-        child: Center(
-          child: Container(
-            // height: MediaQuery.of(context).size.height / 2,
-            margin: const EdgeInsets.only(
-              left: 20,
-              right: 20,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 190,
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 24),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: MyColors.lessBlackColor.withOpacity(0.3),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: MyColors.lessBlackColor,
+              ),
+              child: const Center(
+                child: FaIcon(
+                  FontAwesomeIcons.user,
+                  size: 30,
+                  color: MyColors.secondaryColor,
+                ),
+              ),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: MyColors.secondaryColor,
-                  ),
-                  child: TextFormField(
-                    textAlign: TextAlign.right,
-                    controller: emailController,
-                    decoration: customInputDecoration(
-                      'الايميل',
-                      Icons.email_outlined,
-                    ),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (email) => email == null ? "Enter Email " : null,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    resetPassword();
-                  },
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      backgroundColor: MyColors.primaryColor,
-                      minimumSize: const Size.fromHeight(50)),
-                  icon: const Icon(
-                    Icons.message,
-                    size: 20,
-                  ),
-                  label: const Text(
-                    ' للتحقق من ايملك',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            const SizedBox(
+              height: 30,
             ),
-          ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: MyColors.lessBlackColor.withOpacity(0.7),
+              ),
+              child: TextFormField(
+                style: const TextStyle(
+                  fontFamily: 'Cairo',
+                  fontSize: 12,
+                  color: MyColors.secondaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.right,
+                controller: emailController,
+                decoration: customInputDecoration(
+                  'الايميل',
+                  Icons.email_outlined,
+                ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (email) => email == null ? "Enter Email " : null,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                resetPassword();
+              },
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  backgroundColor: MyColors.blackColor,
+                  minimumSize: const Size.fromHeight(50)),
+              icon: const Icon(
+                Icons.message,
+                size: 20,
+              ),
+              label: const Text(
+                ' للتحقق من ايملك',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -113,32 +114,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           alignment: Alignment.center,
           child: FaIcon(
             icon,
-            color: MyColors.secondaryTextColor,
+            color: MyColors.containerColor.withOpacity(0.8),
           ),
         ),
         hintText: hintText,
         border: InputBorder.none,
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.green),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
-          borderRadius: BorderRadius.circular(20),
-        ),
+
         errorStyle: const TextStyle(
           fontFamily: 'Cairo',
           fontSize: 12,
           color: Colors.red,
         ),
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           fontFamily: 'Cairo',
           fontSize: 12,
-          color: MyColors.secondaryTextColor,
+          color: MyColors.containerColor.withOpacity(0.8),
+          fontWeight: FontWeight.normal,
         ),
       );
 
@@ -161,7 +152,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         email: emailController.text.trim(),
       );
 
-      Utils.showSnackBar('لقد ارسلنا رمز التحقق الى بريدك', type: 'info');
+      Utils.showSnackBar('قمنا بارسال رمز التحقق الى بريدك', type: 'info');
     } on FirebaseAuthException catch (e) {
       Utils.showSnackBar(e.message);
     }

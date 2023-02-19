@@ -184,6 +184,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           oldCategory?.description,
                       image: curentCategory['image'] ?? oldCategory?.image,
                       id: curentCategory['id'] ?? oldCategory?.id,
+                      createAt:curentCategory['createAt']?? oldCategory?.createAt,
                     );
                     //print(newCategory);
 
@@ -198,6 +199,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           categoryController.newCategory['description'],
                       image: categoryController.newCategory['image'],
                       id: 1,
+                      createAt: DateTime.now(),
                       status:
                           (categoryController.newCategory['status'] == null)
                               ? false

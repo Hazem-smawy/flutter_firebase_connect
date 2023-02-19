@@ -12,7 +12,7 @@ class DatabaseService {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   Stream<List<Category>> getCategories() {
     return _firebaseFirestore
-        .collection('category')
+        .collection('categories')
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((e) => Category.fromSnapshot(e)).toList();
@@ -20,36 +20,38 @@ class DatabaseService {
   }
 
   Future<void> addCategory(Category category) {
-    return _firebaseFirestore.collection('category').add(category.toMap());
+    print(category.cid);
+    return _firebaseFirestore
+        .collection('categories')
+        .doc(category.cid)
+        .set(category.toMap());
   }
 
+  // Future<void> updateDoc(Category category) {
+  //   final json = category.toMap();
+  //   return _firebaseFirestore
+  //       .collection('categories')
+  //       .where('cid', isEqualTo: category.cid)
+  //       .get()
+  //       .then((value) => value.docs.first.reference.update(json));
+  // }
   Future<void> updateDoc(Category category) {
     final json = category.toMap();
     return _firebaseFirestore
-        .collection('category')
-        .where('cid', isEqualTo: category.cid)
-        .get()
-        .then((value) => value.docs.first.reference.update(json));
+        .collection('categories')
+        .doc(category.cid)
+        .update(json);
   }
 
   Future<void> updateField(Category category, String field, dynamic newValue) {
     return _firebaseFirestore
-        .collection('category')
-        .where('cid', isEqualTo: category.cid)
-        .get()
-        .then((value) => {
-              value.docs.first.reference.update(
-                {field: newValue},
-              ),
-            });
+        .collection('categories')
+        .doc(category.cid)
+        .update({field: newValue});
   }
 
   Future<void> deleteField(String id) {
-    return _firebaseFirestore
-        .collection('category')
-        .where('cid', isEqualTo: id)
-        .get()
-        .then((value) => {value.docs.first.reference.delete()});
+    return _firebaseFirestore.collection('categories').doc(id).delete();
   }
 
   // product database
@@ -72,7 +74,8 @@ class DatabaseService {
       return snap.docs.map((e) => Product.fromSnapshot(e)).toList();
     });
   }
-   Future<List<Product>> getProductsOfCategoryAndLimit(String cid) {
+
+  Future<List<Product>> getProductsOfCategoryAndLimit(String cid) {
     return _firebaseFirestore
         .collection('products')
         .where('cid', isEqualTo: cid)
@@ -95,24 +98,22 @@ class DatabaseService {
   }
 
   Future<void> addProduct(Product product) {
-    return _firebaseFirestore.collection('products').add(product.toMap());
+    return _firebaseFirestore
+        .collection('products')
+        .doc(product.id)
+        .set(product.toMap());
   }
 
   Future<void> updateProduct(Product product) {
     final json = product.toMap();
     return _firebaseFirestore
         .collection('products')
-        .where('id', isEqualTo: product.id)
-        .get()
-        .then((value) => value.docs.first.reference.update(json));
+        .doc(product.id)
+        .update(json);
   }
 
   Future<void> deleteProduct(String id) {
-    return _firebaseFirestore
-        .collection('products')
-        .where('id', isEqualTo: id)
-        .get()
-        .then((value) => {value.docs.first.reference.delete()});
+    return _firebaseFirestore.collection('products').doc(id).delete();
   }
 
   // about
@@ -201,6 +202,18 @@ class DatabaseService {
     });
   }
 
+  Future<User?> getUser(String? id) async {
+    if (id == null) {
+      return null;
+    } else {
+      return _firebaseFirestore
+          .collection('users')
+          .doc(id)
+          .get()
+          .then((value) => User.fromSnapshot(value));
+    }
+  }
+
   Future<void> addUser(User user) async {
     final doc = _firebaseFirestore.collection('users').doc(user.email);
     await doc.set(user.toMap());
@@ -271,14 +284,156 @@ class DatabaseService {
     });
   }
 
+//completed order
+  Stream<List<Order.OrderCompleted>> getTodayOrdersCompleted() {
+    return _firebaseFirestore
+        .collection('completedOrders')
+        .where('completedOn',
+            isGreaterThanOrEqualTo: DateTime.parse(
+                    DateTime.now().subtract(const Duration(days: 1)).toString())
+                .millisecondsSinceEpoch)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((e) => Order.OrderCompleted.fromSnapshot(e))
+          .toList();
+    });
+  }
+
+  Stream<List<Order.OrderCompleted>> getLastWeekOrdersCompleted() {
+    return _firebaseFirestore
+        .collection('completedOrders')
+        .where('completedOn',
+            isLessThanOrEqualTo: DateTime.parse(
+                    DateTime.now().subtract(const Duration(days: 1)).toString())
+                .millisecondsSinceEpoch)
+        .where('completedOn',
+            isGreaterThanOrEqualTo: DateTime.parse(
+                    DateTime.now().subtract(const Duration(days: 7)).toString())
+                .millisecondsSinceEpoch)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((e) => Order.OrderCompleted.fromSnapshot(e))
+          .toList();
+    });
+  }
+
+  Stream<List<Order.OrderCompleted>> getLastMonthOrdersCompleted() {
+    return _firebaseFirestore
+        .collection('completedOrders')
+        .where('completedOn',
+            isLessThanOrEqualTo: DateTime.parse(
+                    DateTime.now().subtract(const Duration(days: 7)).toString())
+                .millisecondsSinceEpoch)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((e) => Order.OrderCompleted.fromSnapshot(e))
+          .toList();
+    });
+  }
+
+  Stream<List<Order.OrderCompleted>> getOrdersCompletedForUser(String userId) {
+    return _firebaseFirestore
+        .collection('completedOrders')
+        .where('order.customerId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((e) => Order.OrderCompleted.fromSnapshot(e))
+          .toList();
+    });
+  }
+
+// favorite
+  Stream<List<Order.Order>> getFavorite(String userId) {
+    return _firebaseFirestore
+        .collection('orders')
+        .where('isCompleted', isEqualTo: 0)
+        .where('customerId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((e) => Order.Order.fromSnapshot(e)).toList();
+    });
+  }
+
+  Future<void> deleteFavorite(String id, String userId) async {
+    return _firebaseFirestore
+        .collection('orders')
+        .where('isCompleted', isEqualTo: 0)
+        .where('customerId', isEqualTo: userId)
+        .where('id', isEqualTo: id)
+        .get()
+        .then((value) => {value.docs.first.reference.delete()});
+  }
+    Future<void> deleteFavoriteAfterAddedToOrder(String id) async {
+    return _firebaseFirestore
+        .collection('orders')
+        .where('id', isEqualTo: id)
+        .get()
+        .then((value) => {value.docs.first.reference.delete()});
+  }
+
   Future<void> addOrder(Order.Order order) async {
-    final doc = _firebaseFirestore.collection('orders').doc();
+    final doc = _firebaseFirestore.collection('orders').doc(order.id);
     await doc.set(order.toMap());
   }
 
-  Future<void> updateOrder(Order.Order order, String field, dynamic newValue) {
+  Future<Order.Order?> getLastOrder() async {
     return _firebaseFirestore
         .collection('orders')
+        .orderBy('orderOn', descending: true)
+        //.where('cid', isEqualTo: cid)
+        .limit(1)
+        .get()
+        .then((snap) {
+      if (snap.docs.isEmpty) return null;
+      return Order.Order.fromSnapshot(snap.docs.first);
+    });
+
+    // if (doc == null) return null;
+    // return doc;
+  }
+
+  Future<void> addCompletedOrder(Order.OrderCompleted order) async {
+    final doc = _firebaseFirestore.collection('completedOrders').doc(order.id);
+    await doc.set(order.toMap());
+    print(doc);
+  }
+
+  Future<Order.OrderCompleted?> getLastCompletedOrder() async {
+    return _firebaseFirestore
+        .collection('completedOrders')
+        .orderBy('completedOn', descending: false)
+        //.where('cid', isEqualTo: cid)
+        .limit(1)
+        .get()
+        .then((snap) {
+      if (snap.docs.isEmpty) return null;
+      return Order.OrderCompleted.fromSnapshot(snap.docs.first);
+    });
+
+    // if (doc == null) return null;
+    // return doc;
+  }
+
+  // Future<Order.Order?> getTheLastOrderForUser(String userId) async {
+  //   return _firebaseFirestore
+  //       .collection('orders')
+  //       //.orderBy('orderOn', descending: true)
+  //       .where('customerId', isEqualTo: userId)
+  //       .limit(1)
+  //       .get()
+  //       .then((snap) {
+  //     if (snap.docs.isEmpty) return null;
+  //     return Order.Order.fromSnapshot(snap.docs.first);
+  //   });
+  // }
+
+  Future<void> updateOrderCompleted(Order.OrderCompleted order, String field, dynamic newValue) {
+    return _firebaseFirestore
+        .collection('completedOrders')
         .where('id', isEqualTo: order.id)
         .get()
         .then((value) => {
@@ -328,5 +483,32 @@ class DatabaseService {
         .where('id', isEqualTo: id)
         .get()
         .then((value) => {value.docs.first.reference.delete()});
+  }
+
+  // users
+
+  //update the id for product and categories
+  Future<Product?> getLastIdForProducts() async {
+    return _firebaseFirestore
+        .collection('products')
+        .orderBy('createAt', descending: false)
+        .limit(1)
+        .get()
+        .then((snap) {
+      if (snap.docs.isEmpty) return null;
+      return Product.fromSnapshot(snap.docs.first);
+    });
+  }
+
+  Future<Category?> getLastIdForCategories() async {
+    return _firebaseFirestore
+        .collection('categories')
+        .orderBy('createAt', descending: false)
+        .limit(1)
+        .get()
+        .then((snap) {
+      if (snap.docs.isEmpty) return null;
+      return Category.fromSnapshot(snap.docs.first);
+    });
   }
 }

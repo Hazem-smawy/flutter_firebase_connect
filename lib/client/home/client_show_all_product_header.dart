@@ -17,9 +17,9 @@ class ClientShowAllProductHeaderWidget extends StatelessWidget {
         color: MyColors.bg,
         boxShadow: [
           BoxShadow(
-            color: MyColors.lessBlackColor.withOpacity(0.2),
+            color: MyColors.lessBlackColor.withOpacity(0.08),
             offset: const Offset(1, 1),
-            blurRadius: 20,
+            blurRadius: 10,
           )
         ],
       ),

@@ -7,14 +7,15 @@ import 'package:equatable/equatable.dart';
 class Product extends Equatable {
   final String id;
   final String name;
-  List<dynamic>  description;
+  List<dynamic> description;
   final String image;
   final String price;
   final String offerPrice;
   final String quantity;
   bool status;
   final String cid;
-  
+  final DateTime createAt;
+
   Product({
     required this.id,
     required this.name,
@@ -25,6 +26,7 @@ class Product extends Equatable {
     required this.quantity,
     this.status = true,
     required this.cid,
+    required this.createAt,
   });
 
   @override
@@ -40,6 +42,7 @@ class Product extends Equatable {
       quantity,
       status,
       cid,
+      createAt,
     ];
   }
 
@@ -53,6 +56,7 @@ class Product extends Equatable {
     String? quantity,
     bool? status,
     String? cid,
+    DateTime? createAt,
   }) {
     return Product(
       id: id ?? this.id,
@@ -64,6 +68,7 @@ class Product extends Equatable {
       quantity: quantity ?? this.quantity,
       status: status ?? this.status,
       cid: cid ?? this.cid,
+      createAt: createAt ?? this.createAt,
     );
   }
 
@@ -78,6 +83,7 @@ class Product extends Equatable {
       'quantity': quantity,
       'status': status,
       'cid': cid,
+      'createAt': createAt.millisecondsSinceEpoch,
     };
   }
 
@@ -92,27 +98,15 @@ class Product extends Equatable {
       quantity: snap['quantity'] as String,
       status: snap['status'] as bool,
       cid: snap['cid'] as String,
+      createAt: DateTime.fromMillisecondsSinceEpoch(snap['createAt'] as int),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Product.fromJson(String source) => Product.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Product.fromJson(String source) =>
+      Product.fromSnapshot(json.decode(source) as DocumentSnapshot);
 
   @override
   bool get stringify => true;
-
-  factory Product.fromMap(Map<String, dynamic> map) {
-    return Product(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      description: List<dynamic>.from((map['description'] as List<dynamic>)),
-      image: map['image'] as String,
-      price: map['price'] as String,
-      offerPrice: map['offerPrice'] as String,
-      quantity: map['quantity'] as String,
-      status: map['status'] as bool,
-      cid: map['cid'] as String,
-    );
-  }
 }
