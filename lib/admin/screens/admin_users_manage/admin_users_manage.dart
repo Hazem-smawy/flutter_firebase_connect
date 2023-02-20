@@ -12,11 +12,10 @@ import 'package:get/get.dart';
 class AmdinUserMangage extends StatelessWidget {
   AmdinUserMangage({super.key});
   DatabaseService databaseService = DatabaseService();
-      UserController userController = Get.put(UserController());
+  UserController userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
- 
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -140,12 +139,14 @@ class UserItemWidget extends StatelessWidget {
                     fontSize: 14,
                   ),
                 ),
-                Text(
-                  user.email,
-                  style: const TextStyle(
-                    color: MyColors.secondaryTextColor,
-                    fontFamily: 'Cairo',
-                    fontSize: 9,
+                RichText(
+                  text: TextSpan(
+                    text: user.email,
+                    style: const TextStyle(
+                      color: MyColors.secondaryTextColor,
+                      fontFamily: 'Cairo',
+                      fontSize: 10,
+                    ),
                   ),
                 ),
               ],

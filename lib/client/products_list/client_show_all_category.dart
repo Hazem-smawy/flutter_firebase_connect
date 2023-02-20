@@ -67,8 +67,11 @@ class ClientShowAllCategoryProductsScreen extends StatelessWidget {
                   category: category,
                 ),
                 const SizedBox(height: 20),
-                ClientCategoryImageWidget(
-                  image: category.image,
+                Hero(
+                  tag: category.createAt,
+                  child: ClientCategoryImageWidget(
+                    image: category.image,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Container(

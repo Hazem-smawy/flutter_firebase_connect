@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fire_base/admin/controller/amdin_order_controller.dart';
 import 'package:flutter_fire_base/admin/model/order_model.dart';
+import 'package:flutter_fire_base/client/client_user_info_screen.dart/client_user_completed_details.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -92,6 +93,8 @@ class ClientUserCompletedOrdersScreen extends StatelessWidget {
                                 orderController.completedOrdersForUser.length,
                             itemBuilder: (BuildContext context, int index) {
                               return AdminOrderItemWidget(
+                                orderCompleted: orderController
+                                    .completedOrdersForUser[index],
                                 order: orderController
                                     .completedOrdersForUser[index].order,
                                 section: 0,
@@ -164,9 +167,11 @@ class AdminOrderItemWidget extends StatelessWidget {
   Order order;
   final int section;
   final int index;
+  OrderCompleted orderCompleted;
   AdminOrderItemWidget({
     Key? key,
     required this.order,
+    required this.orderCompleted,
     required this.section,
     required this.index,
   }) : super(key: key);
@@ -204,11 +209,9 @@ class AdminOrderItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTap: () => Get.to(() => AdminOrderDetailsScreen(
-      //       section: section,
-      //       index: index,
-      //       order: order,
-      //     )),
+      onTap: () => Get.to(() => ClientUserCompletedOrderDetails(
+            orderCompleted: orderCompleted,
+          )),
       child: Container(
         margin: const EdgeInsets.only(top: 10),
         padding: const EdgeInsets.all(10),

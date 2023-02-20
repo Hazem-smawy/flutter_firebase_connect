@@ -53,49 +53,52 @@ class ClientProductItemWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                constraints: const BoxConstraints(minHeight: 150),
-                child: Image.network(
-                  product.image,
-                  width: double.infinity,
-                  // height: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, exception, stackTrack) => Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: getBackgroundColor(),
-                    ),
-                    height: 200,
-                    child: const Center(
-                      child: Icon(
-                        Icons.error,
-                      ),
-                    ),
-                  ),
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    }
-                    return Container(
+            Hero(
+              tag:product.id,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 150),
+                  child: Image.network(
+                    product.image,
+                    width: double.infinity,
+                    // height: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, exception, stackTrack) => Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: c,
+                        color: getBackgroundColor(),
                       ),
-                      height: 20,
+                      height: 200,
                       child: const Center(
-                          // child: CircularProgressIndicator(
-                          //   color: MyColors.primaryColor,
-                          //   backgroundColor: Colors.white,
-                          //   value: loadingProgress.expectedTotalBytes != null
-                          //       ? loadingProgress.cumulativeBytesLoaded /
-                          //           loadingProgress.expectedTotalBytes!
-                          //       : null,
-                          // ),
+                        child: Icon(
+                          Icons.error,
+                        ),
+                      ),
+                    ),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: c,
+                        ),
+                        height: 20,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: MyColors.primaryColor,
+                            backgroundColor: Colors.white,
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
                           ),
-                    );
-                  },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

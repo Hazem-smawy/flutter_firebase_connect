@@ -367,7 +367,8 @@ class DatabaseService {
         .get()
         .then((value) => {value.docs.first.reference.delete()});
   }
-    Future<void> deleteFavoriteAfterAddedToOrder(String id) async {
+
+  Future<void> deleteFavoriteAfterAddedToOrder(String id) async {
     return _firebaseFirestore
         .collection('orders')
         .where('id', isEqualTo: id)
@@ -431,7 +432,8 @@ class DatabaseService {
   //   });
   // }
 
-  Future<void> updateOrderCompleted(Order.OrderCompleted order, String field, dynamic newValue) {
+  Future<void> updateOrderCompleted(
+      Order.OrderCompleted order, String field, dynamic newValue) {
     return _firebaseFirestore
         .collection('completedOrders')
         .where('id', isEqualTo: order.id)
@@ -491,7 +493,7 @@ class DatabaseService {
   Future<Product?> getLastIdForProducts() async {
     return _firebaseFirestore
         .collection('products')
-        .orderBy('createAt', descending: false)
+        .orderBy('createAt', descending: true)
         .limit(1)
         .get()
         .then((snap) {
@@ -503,7 +505,7 @@ class DatabaseService {
   Future<Category?> getLastIdForCategories() async {
     return _firebaseFirestore
         .collection('categories')
-        .orderBy('createAt', descending: false)
+        .orderBy('createAt', descending: true)
         .limit(1)
         .get()
         .then((snap) {

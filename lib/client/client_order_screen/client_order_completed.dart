@@ -298,8 +298,7 @@ class ClientOrderCompletedScreenState
                             // fontWeight: FontWeight.bold,
                           ),
                           // Initial Value
-                          value: country,
-
+                          value: country, 
                           // Down Arrow Icon
                           icon: const Icon(
                             Icons.keyboard_arrow_down,

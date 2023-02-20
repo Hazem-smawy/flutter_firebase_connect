@@ -8,6 +8,7 @@ import 'package:flutter_fire_base/main.dart';
 import 'package:flutter_fire_base/utilities/my_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:flutter_fire_base/admin/model/user_model.dart' as MyUser;
 
 class ClientUserInfoScreen extends StatefulWidget {
   const ClientUserInfoScreen({super.key});
@@ -20,6 +21,7 @@ class _ClientUserInfoScreenState extends State<ClientUserInfoScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   bool isAdmin = false;
   DatabaseService databaseService = DatabaseService();
+  MyUser.User? myUser;
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _ClientUserInfoScreenState extends State<ClientUserInfoScreen> {
     if (user != null) {
       await databaseService.getUser(user?.email).then((value) {
         setState(() {
+          myUser = value;
           isAdmin = value?.isAdmin ?? false;
         });
       });
@@ -57,7 +60,7 @@ class _ClientUserInfoScreenState extends State<ClientUserInfoScreen> {
                           onTap: (() =>
                               Get.to(() => const AdminBottomNavigation())),
                           child: const FaIcon(
-                            FontAwesomeIcons.pen,
+                            FontAwesomeIcons.penToSquare,
                             color: MyColors.secondaryTextColor,
                             size: 20,
                           ),
@@ -101,9 +104,9 @@ class _ClientUserInfoScreenState extends State<ClientUserInfoScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const Text(
-                    'hazem smawy',
-                    style: TextStyle(
+                  Text(
+                    myUser?.name ?? '',
+                    style: const TextStyle(
                       fontFamily: 'Cario',
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -111,9 +114,9 @@ class _ClientUserInfoScreenState extends State<ClientUserInfoScreen> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const Text(
-                    'hazemsmawy@gmail.com',
-                    style: TextStyle(
+                  Text(
+                    myUser?.email ?? '',
+                    style: const TextStyle(
                       fontFamily: 'Cario',
                       fontSize: 12,
                       fontWeight: FontWeight.normal,

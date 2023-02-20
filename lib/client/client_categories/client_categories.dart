@@ -8,34 +8,48 @@ import 'package:get/get.dart';
 class ClientCategoriesScreen extends StatelessWidget {
   ClientCategoriesScreen({super.key});
   CategoryController categoryController = Get.put(CategoryController());
+  Future<void> refresh() async {
+    categoryController.refreshPage();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          if (categoryController.categories.isEmpty)
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 2,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          if (categoryController.categories.isNotEmpty)
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: categoryController.categories.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () => Get.to(ClientShowAllCategoryProductsScreen(
-                        category: categoryController.categories[index])),
-                    child: ClientCategoryItemWidget(
-                      category: categoryController.categories[index],
+      // backgroundColor: Colors.white,
+      body: Obx(
+        () => RefreshIndicator(
+          onRefresh: refresh,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Column(
+              children: [
+                if (categoryController.categories.isEmpty)
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 2,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
                     ),
-                  );
-                })
-        ],
+                  ),
+                if (categoryController.categories.isNotEmpty)
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: categoryController.categories.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () => Get.to(
+                              ClientShowAllCategoryProductsScreen(
+                                  category:
+                                      categoryController.categories[index])),
+                          child: ClientCategoryItemWidget(
+                            category: categoryController.categories[index],
+                          ),
+                        );
+                      })
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -53,79 +67,84 @@ class ClientCategoryItemWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 15, left: 20, right: 20),
       decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(15), boxShadow: [
+          BoxDecoration(borderRadius: BorderRadius.circular(30), boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.08),
           offset: const Offset(1, 1),
           blurRadius: 5,
+          blurStyle: BlurStyle.outer,
         )
       ]),
-      height: 100,
+      height: 150,
       child: Stack(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.network(
-              category.image,
-              width: double.infinity,
-              // height: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, exception, stackTrack) => const SizedBox(
-                height: 150,
-                child: Center(
-                  child: Icon(
-                    Icons.error,
-                  ),
-                ),
-              ),
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-                return SizedBox(
+          Hero(
+            tag: category.createAt,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Image.network(
+                category.image,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, exception, stackTrack) =>
+                    const SizedBox(
                   height: 150,
                   child: Center(
-                    child: CircularProgressIndicator(
-                      color: MyColors.primaryColor,
-                      backgroundColor: Colors.white,
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null,
+                    child: Icon(
+                      Icons.error,
                     ),
                   ),
-                );
-              },
+                ),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return SizedBox(
+                    height: 150,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: MyColors.primaryColor,
+                        backgroundColor: Colors.white,
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           Container(
             width: double.infinity,
             height: double.infinity,
             // color: MyColors.primaryColor,
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(right: 20, bottom: 20),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: const LinearGradient(
+              borderRadius: BorderRadius.circular(30),
+              gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
                   // Colors.black,
                   // Colors.black.withOpacity(0.5),
-                  Colors.black,
+                  Colors.black.withOpacity(0.7),
                 ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
                 //stops: [0.5, 1],
               ),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   category.title,
                   style: const TextStyle(
                     fontFamily: 'Cairo',
-                    fontSize: 20,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 207, 205, 205),
                   ),

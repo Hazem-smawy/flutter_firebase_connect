@@ -62,44 +62,48 @@ class _ClientProductDetailsScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      widget.product.image,
-                      width: double.infinity,
-                      // height: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, exception, stackTrack) =>
-                          Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: getBackgroundColor(),
-                        ),
-                        height: 300,
-                        child: const Center(
-                          child: Icon(
-                            Icons.error,
+                  Hero(
+                    tag: widget.product.id,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        widget.product.image,
+                        width: double.infinity,
+                        // height: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, exception, stackTrack) =>
+                            Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: getBackgroundColor(),
                           ),
-                        ),
-                      ),
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return SizedBox(
                           height: 300,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: MyColors.primaryColor,
-                              backgroundColor: Colors.white,
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
+                          child: const Center(
+                            child: Icon(
+                              Icons.error,
                             ),
                           ),
-                        );
-                      },
+                        ),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return SizedBox(
+                            height: 300,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: MyColors.primaryColor,
+                                backgroundColor: Colors.white,
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                   // details
@@ -268,9 +272,11 @@ class _ClientProductDetailsScreenState
 
                               if (index >= 0) {
                                 orderController.updateQuantity(
-                                    orderController.orderDetails[index],
-                                    index,
-                                    quantity,widget.product,);
+                                  orderController.orderDetails[index],
+                                  index,
+                                  quantity,
+                                  widget.product,
+                                );
 
                                 Utils.showSnackBar(
                                     'تم زياده كمية  المنتج  + $quantity');
