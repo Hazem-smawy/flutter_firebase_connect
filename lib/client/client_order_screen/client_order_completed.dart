@@ -298,7 +298,7 @@ class ClientOrderCompletedScreenState
                             // fontWeight: FontWeight.bold,
                           ),
                           // Initial Value
-                          value: country, 
+                          value: country,
                           // Down Arrow Icon
                           icon: const Icon(
                             Icons.keyboard_arrow_down,
@@ -359,6 +359,18 @@ class ClientOrderCompletedScreenState
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: MyColors.lessBlackColor,
+                  ),
+                ),
+
                 const SizedBox(
                   height: 15,
                 ),
@@ -532,7 +544,7 @@ class ClientOrderCompletedScreenState
                       ),
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(55),
-                        backgroundColor: MyColors.lessBlackColor,
+                        backgroundColor: MyColors.primaryColor ,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),

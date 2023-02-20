@@ -54,7 +54,7 @@ class ClientProductItemWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Hero(
-              tag:product.id,
+              tag: product.id,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
