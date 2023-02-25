@@ -15,6 +15,7 @@ class OrderController extends GetxController {
   var lastWeekOrderCompleted = <OrderCompleted>[].obs;
   var lastMonthOrderCompleted = <OrderCompleted>[].obs;
   var allOrders = <Order>[].obs;
+  var showNewProductAddToOrder = false.obs;
 
   Map<dynamic, List> orders = {};
   var orderDetails = <OrderDetails>[].obs;
@@ -46,8 +47,6 @@ class OrderController extends GetxController {
 
     super.onInit();
   }
-  
-  
 
   Future<void> getCompletedOrdersForUser(String userId) async {
     completedOrdersForUser

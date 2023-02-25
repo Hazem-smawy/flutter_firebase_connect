@@ -315,7 +315,7 @@ class AdminOrderItemWidget extends StatelessWidget {
                         ),
                         children: [
                           TextSpan(
-                            text: order.id.toString(),
+                            text: orderCompleted.id.toString(),
                             style: const TextStyle(
                               color: MyColors.blackColor,
                               fontSize: 14,

@@ -264,6 +264,12 @@ class _ClientProductDetailsScreenState
                           )),
                       ElevatedButton.icon(
                           onPressed: () async {
+                            if (orderController
+                                    .showNewProductAddToOrder.value ==
+                                false) {
+                              orderController.showNewProductAddToOrder.value =
+                                  true;
+                            }
                             //   print(orderController.orderDetails.isNotEmpty);
                             if (orderController.orderDetails.isNotEmpty) {
                               var index = orderController.orderDetails
@@ -280,7 +286,7 @@ class _ClientProductDetailsScreenState
 
                                 Utils.showSnackBar(
                                     'تم زياده كمية  المنتج  + $quantity');
-                              } else {
+                              } else { 
                                 orderController.orderDetails.add(
                                   OrderDetails(
                                     id: 1,

@@ -406,7 +406,7 @@ class DatabaseService {
   Future<Order.OrderCompleted?> getLastCompletedOrder() async {
     return _firebaseFirestore
         .collection('completedOrders')
-        .orderBy('completedOn', descending: false)
+        .orderBy('completedOn', descending: true)
         //.where('cid', isEqualTo: cid)
         .limit(1)
         .get()

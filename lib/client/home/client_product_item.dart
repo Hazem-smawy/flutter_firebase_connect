@@ -127,6 +127,9 @@ class ClientProductItemWidget extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
+                      if(orderController.showNewProductAddToOrder.value == false)
+                                              orderController.showNewProductAddToOrder.value = true;
+
                       if (orderController.orderDetails.isNotEmpty) {
                         var index = orderController.orderDetails
                             .indexWhere((p0) => p0.productId == product.id);
@@ -170,7 +173,6 @@ class ClientProductItemWidget extends StatelessWidget {
                             'تم اضافة  ${product.name} الى السله');
                       }
 
-                      print(orderController.orderDetails);
                     },
                     child: Container(
                       decoration: BoxDecoration(

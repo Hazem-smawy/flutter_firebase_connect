@@ -169,7 +169,8 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                                                 ),
                                                 children: [
                                                   TextSpan(
-                                                      text: order.id.toString())
+                                                      text: orderCompleted.id
+                                                          .toString())
                                                 ])),
                                       ),
                                       Padding(
@@ -267,8 +268,11 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                                   onChanged: (String? newValue) {
                                     orderController.orderState.value =
                                         newValue!;
-                                    orderController.updateOrder(orderCompleted, section,
-                                        index, getStatusNumber(newValue));
+                                    orderController.updateOrder(
+                                        orderCompleted,
+                                        section,
+                                        index,
+                                        getStatusNumber(newValue));
                                     // getStatusName(int.parse(newValue!));
                                   },
                                 ),

@@ -11,9 +11,11 @@ class OrderCompleted extends Equatable {
   final String id;
   final String country;
   final String city;
-  final String address;
+  final String address; 
   final String image;
-  final Order order;
+  final Order order; 
+  final double lang;
+  final double long;
   final DateTime completedOn;
   const OrderCompleted({
     required this.id,
@@ -22,6 +24,8 @@ class OrderCompleted extends Equatable {
     required this.address,
     required this.image,
     required this.order,
+    required this.lang,
+    required this.long,
     required this.completedOn,
   });
 
@@ -32,6 +36,8 @@ class OrderCompleted extends Equatable {
     String? address,
     String? image,
     Order? order,
+    double? lang,
+    double? long,
     DateTime? completedOn,
   }) {
     return OrderCompleted(
@@ -41,6 +47,8 @@ class OrderCompleted extends Equatable {
       address: address ?? this.address,
       image: image ?? this.image,
       order: order ?? this.order,
+      lang: lang ?? this.lang,
+      long: long ?? this.long,
       completedOn: completedOn ?? this.completedOn,
     );
   }
@@ -53,6 +61,8 @@ class OrderCompleted extends Equatable {
       'address': address,
       'image': image,
       'order': order.toMap(),
+      'lang': lang,
+      'long': long,
       'completedOn': completedOn.millisecondsSinceEpoch,
     };
   }
@@ -65,6 +75,8 @@ class OrderCompleted extends Equatable {
       address: map['address'] as String,
       image: map['image'] as String,
       order: Order.fromMap(map['order'] as Map<String, dynamic>),
+      lang: map['lang'],
+      long:  map['long'],
       completedOn:
           DateTime.fromMillisecondsSinceEpoch(map['completedOn'] as int),
     );
@@ -87,12 +99,27 @@ class OrderCompleted extends Equatable {
       address,
       image,
       order,
+      lang,
+      long,
       completedOn,
     ];
   }
 
-  factory OrderCompleted.fromJson(String source) =>
-      OrderCompleted.fromSnapshot(json.decode(source) as DocumentSnapshot);
+  factory OrderCompleted.fromJson(String source) => OrderCompleted.fromSnapshot(json.decode(source) as DocumentSnapshot);
+
+  factory OrderCompleted.fromsna(Map<String, dynamic> map) {
+    return OrderCompleted(
+      id: map['id'] as String,
+      country: map['country'] as String,
+      city: map['city'] as String,
+      address: map['address'] as String,
+      image: map['image'] as String,
+      order: Order.fromMap(map['order'] as Map<String,dynamic>),
+      lang: map['lang'] as double,
+      long: map['long'] as double,
+      completedOn: DateTime.fromMillisecondsSinceEpoch(map['completedOn'] as int),
+    );
+  }
 }
 
 class Order extends Equatable {

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_fire_base/admin/controller/amdin_order_controller.dart';
 import 'package:flutter_fire_base/admin/screens/utilities/utils.dart';
 import 'package:flutter_fire_base/client/client_categories/client_categories.dart';
 import 'package:flutter_fire_base/client/client_order_screen/client_order_screen.dart';
@@ -20,15 +21,15 @@ class ClientBottomNavigation extends StatefulWidget {
 class _ClientBottomNavigationState extends State<ClientBottomNavigation> {
   int index = 4;
   List<Widget> pages = [
-    //  const AdminCategoryScreen(),
-    //  const AdminAboutShopScreen(),
     const ClientUserInfoScreen(),
     const ClientOrderScreen(),
+    // const ClientShowMapScreen(),
     ClientCategoriesScreen(),
     const ClientSearchScreen(),
     ClientHomeScreen(),
   ];
   User? user = FirebaseAuth.instance.currentUser;
+  OrderController orderController = Get.put(OrderController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -209,11 +210,64 @@ class _ClientBottomNavigationState extends State<ClientBottomNavigation> {
         foregroundColor: MyColors.secondaryTextColor,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: const Center(
-            child: FaIcon(
-          FontAwesomeIcons.firefox,
-          color: MyColors.primaryColor,
-        )),
+        title: Obx(
+          () => Row(
+            children: [
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              const Center(
+                  child: FaIcon(
+                FontAwesomeIcons.firefox,
+                color: MyColors.primaryColor,
+              )),
+              const SizedBox(
+                width: 10,
+              ),
+              if (orderController.showNewProductAddToOrder.value)
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      index = 1;
+                    });
+
+                    orderController.showNewProductAddToOrder.value = false;
+                  },
+                  child: Center(
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        const Center(
+                            child: FaIcon(
+                          FontAwesomeIcons.bagShopping,
+                          color: MyColors.lessBlackColor,
+                          size: 19,
+                        )),
+                        Positioned(
+                            top: -6,
+                            right: -10,
+                            child: Container( 
+                              padding: const EdgeInsets.all(3),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              child: Text(
+                                orderController.orderDetails.length.toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 7,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
         // actions: const [
         //   Center(
         //     child: FaIcon(
@@ -245,6 +299,9 @@ class _ClientBottomNavigationState extends State<ClientBottomNavigation> {
           onTap: ((value) {
             setState(() {
               index = value;
+              if (value == 1) {
+                orderController.showNewProductAddToOrder.value = false;
+              }
             });
           }),
           items: const [
